@@ -12,6 +12,14 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::group(['middleware' => 'api-header'], function () {
+
+    // The registration and login requests doesn't come with tokens
+    // as users at that point have not been authenticated yet
+    // Therefore the jwtMiddleware will be exclusive of them
+    Route::post('user/login', 'UserController@login');
+    Route::post('user/register', 'UserController@register');
+});
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
