@@ -19,6 +19,8 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
+        \App\Http\Middleware\LessonTestGlobal::class,
+
     ];
 
     /**
@@ -60,8 +62,11 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+
         'jwt-auth' => \App\Http\Middleware\jwtMiddleware::class,
-        'api-header' => \App\Http\Middleware\API::class,
+        'api-cors' => \App\Http\Middleware\ApiCors::class,
+        'lesson-test' => \App\Http\Middleware\LessonTest::class,
+        'lesson-test2' => \App\Http\Middleware\LessonTest2::class,
     ];
 
     /**

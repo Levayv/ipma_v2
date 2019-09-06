@@ -1,7 +1,8 @@
 <?php
 namespace App\Http\Middleware;
 use Closure;
-class API
+//todo tename to api-header
+class ApiCors
 {
     /**
      * Handle an incoming request.

@@ -2,20 +2,23 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
-use JWTAuth;
+use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\JWTAuth;
 use JWTAuthException;
+use Illuminate\Support\Facades\Validator;
+
 class UserController extends Controller
 {
-    private function getToken($email, $password)
+    private static function getToken($email, $password)
     {
         $token = null;
-        //$credentials = $request->only('email', 'password');
+//        $credentials = $request->only('email', 'password');
         try {
-            if (!$token = JWTAuth::attempt( ['email'=>$email, 'password'=>$password])) {
+            if (!$token = JWTAuth::attempt( ['email'=>$email, 'password'=>$password] )) {
                 return response()->json([
                     'response' => 'error',
                     'message' => 'Password or email is invalid',
-                    'token'=>$token
+                    'token'=>"EMPTY"
                 ]);
             }
         } catch (JWTAuthException $e) {
@@ -29,7 +32,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $user = \App\User::where('email', $request->email)->get()->first();
-        if ($user && \Hash::check($request->password, $user->password)) // The passwords match...
+        if ($user && Hash::check($request->password, $user->password)) // The passwords match...
         {
             $token = self::getToken($request->email, $request->password);
             $user->auth_token = $token;
@@ -43,31 +46,60 @@ class UserController extends Controller
     }
     public function register(Request $request)
     {
+        // todo add validator
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users',
+            'name' => 'required|string|max:64',
+            'password' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ]);
+        }
+
         $payload = [
-            'password'=>\Hash::make($request->password),
+            'password'=>Hash::make($request->password),
             'email'=>$request->email,
-            'name'=>$request->name,
-            'auth_token'=> ''
+//            'first_name'=>$request->first_name,
+//            'last_name'=>$request->last_name,
+            'name'=> $request->name,
+            'auth_token'=> '',
         ];
 
         $user = new \App\User($payload);
         if ($user->save())
         {
+            // generate user token
+            $token = self::getToken(
+                $request->email,
+                $request->password
+            );
 
-            $token = self::getToken($request->email, $request->password); // generate user token
-
-            if (!is_string($token))  return response()->json(['success'=>false,'data'=>'Token generation failed'], 201);
+            // if token generation failed , return
+            if (!is_string($token)){
+                return response()->json(['success'=>false,'data'=>'Token generation failed'], 201);
+            }
 
             $user = \App\User::where('email', $request->email)->get()->first();
 
-            $user->auth_token = $token; // update user token
+//            $user->auth_token = $token; // update user token
 
             $user->save();
-
-            $response = ['success'=>true, 'data'=>['name'=>$user->name,'id'=>$user->id,'email'=>$request->email,'auth_token'=>$token]];
+            $response = [
+                'success'=>true,
+                'data'=>[
+                    'name'=>$user->name,
+                    'id'=>$user->id,
+                    'email'=>$request->email,
+                ]
+            ];
+            $response->header("AUTH_TEMP" , $token);
         }
         else
-            $response = ['success'=>false, 'data'=>'Couldnt register user'];
+            $response = ['success'=>false, 'data'=>'User registration failed'];
 
 
         return response()->json($response, 201);
