@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import history from "./history";
+import LoginPage from "../modules/auth";
 // import LessonList from "./modules/lesson/list/LessonList";
 // import LessonForm from "./modules/lesson/form/LessonForm";
 // import LessonDelete from "./modules/lesson/form/LessonDelete";
@@ -18,10 +19,14 @@ class AppRouter extends Component {
         return (
             <Router history={history}>
                 <div className={"router-root"}>
-                    <nav className={"router-nav-main"} >
+                    <nav className={"router-nav-main"}>
+                        <hr/>
                         <ul>
                             <li id={"router-nav-dashboard"}><Link to="/">
                                 Dashboard
+                            </Link></li>
+                            <li id={"router-nav-login"}><Link to="/auth/login">
+                                Login
                             </Link></li>
                             <li id={"router-nav-list"}><Link to="/lesson/list">
                                 List
@@ -33,9 +38,11 @@ class AppRouter extends Component {
                                 Edit
                             </Link></li>
                         </ul>
+                        <hr/>
                     </nav>
 
                     <Route path="/" exact component={Dashboard}/>
+                    <Route path="/auth" component={Auth}/>
                     {/*<Route path="/lesson" component={Lesson}/>*/}
                 </div>
             </Router>
@@ -50,9 +57,14 @@ function Dashboard() {
         textAlign: "center"
     }}>Dashboard</h2>;
 }
-
+function Auth({match}) {
+    return (<div>
+        <Route exact path={`${match.path}/login`} component={LoginPage}/>
+    </div>)
+}
 function Lesson({match}) {
     return (<div>
+        <Route exact path={`${match.path}/auth/login`} component={LoginPage}/>
         {/*<Route exact path={`${match.path}/list/`} component={LessonList}/>*/}
         {/*<Route exact path={`${match.path}/form/`} component={LessonForm}/>*/}
         {/*<Route exact path={`${match.path}/edit/`}*/}
@@ -65,4 +77,5 @@ function Lesson({match}) {
         {/*<Route path={`${match.path}/delete/:recordID`} component={LessonDelete}/>*/}
     </div>)
 }
+
 export default AppRouter;
