@@ -56,6 +56,8 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         // todo : add role
-        return [];
+        return [
+            'role'=>"hardcoded-role-test"
+        ];
     }
 }
