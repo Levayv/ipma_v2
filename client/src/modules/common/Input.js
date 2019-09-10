@@ -2,13 +2,13 @@ import React from 'react';
 
 class Input extends React.Component {
     render() {
+        console.log(this.props.placeholder);
         return (
-            <div className={"input-root"}>
-                <input
-                    value={this.props.value}
-                    onChange={this.props.onChange}
-                />
-            </div>
+            <input className={"common-input"}
+                   value={this.props.value}
+                   onChange={this.props.onChange}
+                   placeholder={this.props.placeholder}
+            />
         );
     }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import Input from './Input'
 import Label from './Label'
+
 // import "./LabeledInput.css"
 
 class LabeledInput extends React.Component {
@@ -12,6 +13,7 @@ class LabeledInput extends React.Component {
                 />
                 <Input
                     value={this.props.value}
+                    placeholder={this.props.placeholder}
                     onChange={this.props.onChange}
                 />
                 <br/>
