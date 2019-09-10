@@ -1,24 +1,31 @@
 import React from "react";
-import LabeledInput from "../common/LabeledInput";
-import Button from "../common/Button";
+import {connect} from "react-redux";
 import axios from "axios";
 
-//  todo * connect redux store
-//  todo * add button
-//  todo * button click must make request
-//  todo ** request endpoint is localhost:8000/api/auth/login
+import LabeledInput from "../common/LabeledInput";
+import Button from "../common/Button";
+import {login_temp} from "../../redux/action";
+
+//  tada * connect redux store
+//  tada * add button
+//  tada * button click must make request
+//  tada ** request endpoint is localhost:8000/api/auth/login
 //  todo ** request must have specified headers [see postman]
-//  todo ** request must have body credentials
+//  todo *** optimise headers using axios's global config
+//  tada ** request must have body credentials
+//  todo * research axios interceptor
+//  todo * wrap axios inside custom "fetcher"
 //
 
-class LoginPage extends React.Component {
+class ConnectedLoginPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             /** user input of corresponding fields */
             credentials: {
-                login: "",
-                password: "",
+                //todo STOPSHIP for testing purposes , default values must be empty strings
+                login: "levayv@mail.ru",
+                password: "123456789",
             }
         };
         /** user input inside LOGIN field */
@@ -58,10 +65,11 @@ class LoginPage extends React.Component {
                         "Content-Type": "application/json"
                     }
                 }
-            ).then((/*response*/) => {
+            ).then((response) => {
                 // console.log(response.status);
                 // console.log(response.data);
-                //todo add dispatch to store
+                this.props.login_temp(response.data.access_token);
+                // todo asap research and implement thunk
 
             }).catch(error => {
                 console.log(`[ERROR CODE:${error.response.status}] ${error.response.data.error}`);
@@ -105,5 +113,17 @@ class LoginPage extends React.Component {
         );
     }
 }
+const mapStateToProps = state => {
+    return {
+        token: state.token,
+    };
+};
 
+function mapDispatchToProps(dispatch) {
+    return {
+        login_temp: token => dispatch(login_temp(token))
+    };
+}
+
+const LoginPage = connect(mapStateToProps, mapDispatchToProps)(ConnectedLoginPage);
 export default LoginPage;
