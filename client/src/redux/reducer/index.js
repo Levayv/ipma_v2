@@ -23,7 +23,6 @@ const initState = {
 
 function root(state = initState, action) {
     // todo refactor to separate reducers and combine them
-    console.log("Reducer: actionType=" + action.type);
     if (action.type === LOGIN_SUCCESS) {
         const newToken = action.payload.response.data.access_token;
         return Object.assign({}, state, {
