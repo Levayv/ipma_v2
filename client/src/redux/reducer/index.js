@@ -1,8 +1,12 @@
-import {LOGIN_TEMP} from "../action-types";
+import {
+    // LOGIN_ATTEMPT,
+    LOGIN_SUCCESS,
+    LOGIN_FAIL,
+} from '../action-types';
 
 const initState = {
-    temp:{
-        singleRecord:{
+    temp: {
+        singleRecord: {
             name: "",
             link: "",
         },
@@ -14,15 +18,23 @@ const initState = {
         },
         page: null,
     },
-    token:"",
+    token: "",
 };
+
 function root(state = initState, action) {
-    // todo refactor to seperate reducers and combine them
-    if (action.type === LOGIN_TEMP) {
+    // todo refactor to separate reducers and combine them
+    console.log("Reducer: actionType=" + action.type);
+    if (action.type === LOGIN_SUCCESS) {
+        const newToken = action.payload.response.data.access_token;
         return Object.assign({}, state, {
-                token: action.payload
-            }
-        )
+            token: newToken
+        });
+    }
+    if (action.type === LOGIN_FAIL) {
+        return Object.assign({}, state, {
+            token: ""
+        });
+
     }
     //-------------------------------------------------
 

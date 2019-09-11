@@ -1,10 +1,11 @@
 import React from "react";
 import {connect} from "react-redux";
-import axios from "axios";
 
 import LabeledInput from "../common/LabeledInput";
 import Button from "../common/Button";
-import {login_temp} from "../../redux/action";
+import {
+    loginAttempt,
+} from "../../redux/action";
 
 //  tada * connect redux store
 //  tada * add button
@@ -38,42 +39,22 @@ class ConnectedLoginPage extends React.Component {
                         password: state.credentials.password,
                     }
                 }));
-            console.log("!", this.state)
         };
         /** user input inside PASSWORD field */
         this.updatePassword = (event) => {
             const newPasswordValue = event.target.value;
             this.setState(state =>
                 Object.assign({}, state, {
-                    credentials: {
-                        login: state.credentials.login,
-                        password: newPasswordValue,
-                    }
+                    credentials: Object.assign({}, state.credentials, {
+                            // login: state.credentials.login,
+                            password: newPasswordValue,
+                        }
+                    )
                 }));
-            console.log("!", this.state)
         };
         /** user click on LOGIN button */
         this.handleLogin = () => {
-            axios.post(
-                "http://" + process.env.REACT_APP_BACKEND_IP_PORT + "/api/auth/login",
-                {
-                    email: this.state.credentials.login,
-                    password: this.state.credentials.password,
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            ).then((response) => {
-                // console.log(response.status);
-                // console.log(response.data);
-                this.props.login_temp(response.data.access_token);
-                // todo asap research and implement thunk
-
-            }).catch(error => {
-                console.log(`[ERROR CODE:${error.response.status}] ${error.response.data.error}`);
-            });
+            this.props.loginAttempt(this.state.credentials);    // axios.post(
         }
     }
 
@@ -113,6 +94,7 @@ class ConnectedLoginPage extends React.Component {
         );
     }
 }
+
 const mapStateToProps = state => {
     return {
         token: state.token,
@@ -121,7 +103,7 @@ const mapStateToProps = state => {
 
 function mapDispatchToProps(dispatch) {
     return {
-        login_temp: token => dispatch(login_temp(token))
+        loginAttempt: credentials => dispatch(loginAttempt(credentials)),
     };
 }
 
