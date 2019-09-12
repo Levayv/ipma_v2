@@ -3,7 +3,7 @@ import {
     Router,
     Route,
     Link,
-    Redirect,
+    // Redirect,
 } from "react-router-dom";
 
 import history from "./history";
@@ -12,9 +12,16 @@ import LoginPage from "../modules/auth";
 // import LessonForm from "./modules/lesson/form/LessonForm";
 // import LessonDelete from "./modules/lesson/form/LessonDelete";
 
+import initialize from "../config/init";
+
 class AppRouter extends Component {
+    constructor(props) {
+        super(props);
+        initialize();
+    }
+
     render() {
-        // todo research and use Refs instead of direct DOM monipulation
+        // todo research and use Refs instead of direct DOM manipulation
         // todo refactor (id for getElementByID) >> (ref)
         return (
             <Router history={history}>
@@ -62,20 +69,20 @@ function Auth({match}) {
         <Route exact path={`${match.path}/login`} component={LoginPage}/>
     </div>)
 }
-function Lesson({match}) {
-    return (<div>
-        <Route exact path={`${match.path}/auth/login`} component={LoginPage}/>
-        {/*<Route exact path={`${match.path}/list/`} component={LessonList}/>*/}
-        {/*<Route exact path={`${match.path}/form/`} component={LessonForm}/>*/}
-        {/*<Route exact path={`${match.path}/edit/`}*/}
-        {/*       render={() => {*/}
-        {/*           alert("Please use edit button inside List of Lessons");*/}
-        {/*           // history.push("/lesson/list")*/}
-        {/*           return (<Redirect to={{pathname: "/lesson/list",}}/>)*/}
-        {/*       }}/>*/}
-        {/*<Route path={`${match.path}/edit/:recordID`} component={LessonForm}/>*/}
-        {/*<Route path={`${match.path}/delete/:recordID`} component={LessonDelete}/>*/}
-    </div>)
-}
+// function Lesson({match}) {
+//     return (<div>
+//         <Route exact path={`${match.path}/auth/login`} component={LoginPage}/>
+//         {/*<Route exact path={`${match.path}/list/`} component={LessonList}/>*/}
+//         {/*<Route exact path={`${match.path}/form/`} component={LessonForm}/>*/}
+//         {/*<Route exact path={`${match.path}/edit/`}*/}
+//         {/*       render={() => {*/}
+//         {/*           alert("Please use edit button inside List of Lessons");*/}
+//         {/*           // history.push("/lesson/list")*/}
+//         {/*           return (<Redirect to={{pathname: "/lesson/list",}}/>)*/}
+//         {/*       }}/>*/}
+//         {/*<Route path={`${match.path}/edit/:recordID`} component={LessonForm}/>*/}
+//         {/*<Route path={`${match.path}/delete/:recordID`} component={LessonDelete}/>*/}
+//     </div>)
+// }
 
 export default AppRouter;
