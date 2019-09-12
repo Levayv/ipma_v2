@@ -25,6 +25,7 @@ class ConnectedLoginPage extends React.Component {
             /** user input of corresponding fields */
             credentials: {
                 //todo STOPSHIP for testing purposes , default values must be empty strings
+                //todo research uncontrolled input in React and refactor accordingly
                 login: "levayv@mail.ru",
                 password: "123456789",
             }

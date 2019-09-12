@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,10 +20,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
 
-    'middleware' => 'api',
+//   middleware api is assigned in AuthController's constructor
+//    'middleware' => 'api',
     'prefix' => 'auth'
 
-], function ($router) {
+], function (/*$router*/) {
 
     Route::post('login', 'AuthController@login')->name('login');
     Route::post('logout', 'AuthController@logout');
@@ -31,4 +32,16 @@ Route::group([
     Route::get('me', 'AuthController@me');
 
 });
+
+Route::group([
+    'prefix' => 'lesson'
+], function () {
+
+    Route::post('/', 'LessonController@store');  // create lesson
+    Route::get('/', 'LessonController@index');   // read list of lessons
+    Route::get('{id}', 'LessonController@show');    // read single lesson
+    Route::put('{id}', 'LessonController@update');  // update lesson
+    Route::delete('{id}', 'LessonController@destroy'); // delete lesson
+}
+);
 
