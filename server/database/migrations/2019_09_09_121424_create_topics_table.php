@@ -13,10 +13,10 @@ class CreateTopicsTable extends Migration
      */
     public function up()
     {
-        Schema::create('topics', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
-        });
+//        Schema::create('topics', function (Blueprint $table) {
+//            $table->bigIncrements('id');
+//            $table->timestamps();
+//        });
     }
 
     /**
@@ -26,6 +26,6 @@ class CreateTopicsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('topics');
+//        Schema::dropIfExists('topics');
     }
 }
