@@ -11,9 +11,9 @@ class LessonController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('checkLessonAvailability')
+        $this->middleware('CheckLessonAvailability')
             ->only(
-                'show'
+                ['show', 'update']
             );
     }
 
@@ -86,7 +86,6 @@ class LessonController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), $this->requiredFieldSet);
-
         if ($validator->fails()) {
             return response()->json(
                 self::getJsonFail($validator->errors())
@@ -151,16 +150,25 @@ class LessonController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Lesson $lesson
+     * @param int $id
      * @return Response
      */
-    public function update(Request $request, Lesson $lesson)
+    public function update(Request $request, int $id)
     {
+        $validator = Validator::make($request->all(), $this->requiredFieldSet);
+        if ($validator->fails()) {
+            return response()->json(
+                self::getJsonFail($validator->errors())
+            );
+        }
 
+        $lesson = Lesson::query()->find($id);
+        $lesson->fill($request->all());
+        $lesson->save();
 
-        var_dump("OK");
-        var_dump("LessonController@update");
-        dd();
+        return response()->json(
+            self::getJsonSuccess(__FUNCTION__)
+        );
     }
 
     /**
