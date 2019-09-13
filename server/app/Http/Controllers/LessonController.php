@@ -9,6 +9,14 @@ use Illuminate\Support\Facades\Validator;
 
 class LessonController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('checkLessonAvailability')
+            ->only(
+                'show'
+            );
+    }
+
     /**
      * The required fields. Used by Controller Action's Validate function ($rule argument).
      *
@@ -27,7 +35,7 @@ class LessonController extends Controller
      * @param $successText string optional for custom text ($actionType will be ignored)
      * @return array [status , message]
      */
-    private function getJsonSuccess($actionType, $successText = '')
+    public static function getJsonSuccess($actionType, $successText = '')
     {
         if ($successText === '') {
             $successText = 'Lesson d Successfully';
@@ -53,7 +61,7 @@ class LessonController extends Controller
      *      if 'record does not exist'  use null
      * @return array [status , head , message]
      */
-    private function getJsonFail($errorText)
+    public static function getJsonFail($errorText)
     {
         $json = [
             'status' => 'fail',
@@ -69,12 +77,6 @@ class LessonController extends Controller
         return $json;
     }
 
-    private function exists()
-    {
-
-        return true;
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -87,7 +89,7 @@ class LessonController extends Controller
 
         if ($validator->fails()) {
             return response()->json(
-                $this->getJsonFail($validator->errors())
+                self::getJsonFail($validator->errors())
             );
         }
 
@@ -99,7 +101,7 @@ class LessonController extends Controller
         $lesson->save();
 
         $response = response()->json(
-            $this->getJsonSuccess(__FUNCTION__)
+            self::getJsonSuccess(__FUNCTION__)
         );
 
 //        var_dump(" --- ");
@@ -142,9 +144,6 @@ class LessonController extends Controller
     public function show(int $id)
     {
         $lesson = Lesson::query()->find($id);
-        if (!$lesson) {
-            return response()->json($this->getJsonFail(null));
-        }
         return response()->json($lesson);
     }
 
@@ -157,6 +156,8 @@ class LessonController extends Controller
      */
     public function update(Request $request, Lesson $lesson)
     {
+
+
         var_dump("OK");
         var_dump("LessonController@update");
         dd();
@@ -170,6 +171,8 @@ class LessonController extends Controller
      */
     public function delete(Lesson $lesson)
     {
+
+
         var_dump("OK");
         var_dump("LessonController@delete");
         dd();
