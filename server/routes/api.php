@@ -45,3 +45,5 @@ Route::group([
 }
 );
 
+//Route::get('{entity}/{id}');
+

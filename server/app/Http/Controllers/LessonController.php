@@ -3,17 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Lesson;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class LessonController extends Controller
 {
+    // todo research mutator & accessor
     public function __construct()
     {
         $this->middleware('CheckLessonAvailability')
             ->only(
-                ['show', 'update']
+                ['show', 'update', 'delete']
             );
     }
 
@@ -92,8 +94,6 @@ class LessonController extends Controller
             );
         }
 
-        // todo research mutator & accessor
-        // $lesson = Lesson::query()->create($request->all());
 
         $lesson = new Lesson();
         $lesson->fill($request->all());
@@ -102,19 +102,6 @@ class LessonController extends Controller
         $response = response()->json(
             self::getJsonSuccess(__FUNCTION__)
         );
-
-//        var_dump(" --- ");
-//        var_dump("Request data");
-//        var_dump($request->all());
-//        var_dump(" --- ");
-//        var_dump("Model array");
-//        var_dump($lesson->toArray());
-//        var_dump(" --- ");
-//        var_dump("Model json");
-//        var_dump($lesson->toJson());
-//        var_dump(" --- ");
-//        var_dump("LessonController@store");
-//        dd();
         return $response;
     }
 
@@ -174,15 +161,16 @@ class LessonController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Lesson $lesson
-     * @return Response
+     * @param int $id
+     * @return void
+     * @throws Exception
      */
-    public function delete(Lesson $lesson)
+    public function delete(int $id)
     {
-
-
-        var_dump("OK");
-        var_dump("LessonController@delete");
-        dd();
+        $lesson = Lesson::query()->find($id);
+        $lesson->delete();
+        return response()->json(
+            self::getJsonSuccess(__FUNCTION__)
+        );
     }
 }

@@ -7,6 +7,10 @@ use App\Lesson;
 use Closure;
 
 //todo consider refactoring , research middleware naming conventions
+
+/**
+ *  Create Response imminently if Lesson doesn't exist without accessing controller actions
+ */
 class CheckLessonAvailability
 {
     /**
@@ -29,8 +33,13 @@ class CheckLessonAvailability
     }
 
 //  todo future - implement universal solution
-//  $entity = request()->route('entity');
-//  const a = [
-//      'lesson' => Lesson::class,
-//  ];
+//  1. array for storing Model list
+//      const a = [
+//          'lesson' => Lesson::class,
+//      ];
+//  2. compare if corresponding Model exist with array map
+//  3. add 'lesson' , 'topic' , 'user' etc to parameters inside routes/api.php
+//      //Route::get('{entity}/{id}');
+//  4. getCorresponding model name like id parameter
+//      $entity = request()->route('entity');
 }
