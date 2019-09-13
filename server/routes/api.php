@@ -37,11 +37,11 @@ Route::group([
     'prefix' => 'lesson'
 ], function () {
 
-    Route::post('/', 'LessonController@store');  // create lesson
+    Route::post('/', 'LessonController@store');  // store lesson
     Route::get('/', 'LessonController@index');   // read list of lessons
     Route::get('{id}', 'LessonController@show');    // read single lesson
     Route::put('{id}', 'LessonController@update');  // update lesson
-    Route::delete('{id}', 'LessonController@destroy'); // delete lesson
+    Route::delete('{id}', 'LessonController@delete'); // delete lesson
 }
 );
 
