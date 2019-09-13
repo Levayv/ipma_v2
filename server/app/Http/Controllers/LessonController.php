@@ -18,19 +18,19 @@ class LessonController extends Controller
         'name' => 'required|max:128',
         'link' => 'required|max:512',
         'topic_id' => 'required',
-    ]; //todo move to controller https://laravel.com/docs/5.8/validation#creating-form-requests
+    ];
+
     /**
      * Get Array (for Json) during response SUCCESS
      *
-     * @param $actionType string 'store'|'update'|'delete'
+     * @param $actionType string 'store' | 'update' | 'delete'
      * @param $successText string optional for custom text ($actionType will be ignored)
-     * @return array
+     * @return array [status , message]
      */
     private function getJsonSuccess($actionType, $successText = '')
     {
         if ($successText === '') {
             $successText = 'Lesson d Successfully';
-//            $a = strpos($body , 'TEMP');
             $successText = substr_replace(
                 $successText,
                 $actionType,
@@ -41,7 +41,7 @@ class LessonController extends Controller
         }
         return [
             'status' => 'success',
-            'body' => $successText
+            'message' => $successText
         ];
     }
 
@@ -51,20 +51,22 @@ class LessonController extends Controller
      * @param $errorText string|null
      *      if 'validation failed'      use ($validator->error)
      *      if 'record does not exist'  use null
-     * @return array
+     * @return array [status , head , message]
      */
     private function getJsonFail($errorText)
     {
+        $json = [
+            'status' => 'fail',
+        ];
         if (isset($errorText)) {
             $title = 'validation failed';
+            $json['error'] = $errorText;
+
         } else {
             $title = 'record does not exist';
         }
-        return [
-            'status' => 'fail',
-            'head' => $title,
-            'body' => $errorText
-        ];
+        $json['message'] = $title;
+        return $json;
     }
 
     private function exists()
@@ -90,7 +92,8 @@ class LessonController extends Controller
         }
 
         // todo research mutator & accessor
-//        $lesson = Lesson::query()->create($request->all());
+        // $lesson = Lesson::query()->create($request->all());
+
         $lesson = new Lesson();
         $lesson->fill($request->all());
         $lesson->save();
@@ -98,7 +101,6 @@ class LessonController extends Controller
         $response = response()->json(
             $this->getJsonSuccess(__FUNCTION__)
         );
-
 
 //        var_dump(" --- ");
 //        var_dump("Request data");
@@ -122,22 +124,28 @@ class LessonController extends Controller
      */
     public function index()
     {
-        var_dump("OK");
-        var_dump("LessonController@index");
-        dd();
+        //todo research pagination
+
+        $lessonList = Lesson::query()
+            ->orderByDesc('updated_at')
+            ->get();
+
+        return response()->json($lessonList);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param Lesson $lesson
+     * @param int $id
      * @return Response
      */
-    public function show(Lesson $lesson)
+    public function show(int $id)
     {
-        var_dump("OK");
-        var_dump("LessonController@show");
-        dd();
+        $lesson = Lesson::query()->find($id);
+        if (!$lesson) {
+            return response()->json($this->getJsonFail(null));
+        }
+        return response()->json($lesson);
     }
 
     /**
