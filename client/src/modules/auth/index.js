@@ -22,36 +22,52 @@ class ConnectedLoginPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            /** form control handles*/
+            form: {
+                submitDisabled: true,
+                validation: {
+                    login: false,
+                    password: false,
+                }
+            },
             /** user input of corresponding fields */
             credentials: {
                 //todo STOPSHIP for testing purposes , default values must be empty strings
                 //todo research uncontrolled input in React and refactor accordingly
                 login: "levayv@mail.ru",
                 password: "123456789",
+                // login: "",
+                // password: "",
             }
         };
         /** user input inside LOGIN field */
         this.updateLogin = (event) => {
             const newLoginValue = event.target.value;
-            this.setState(state =>
-                Object.assign({}, state, {
-                    credentials: {
-                        login: newLoginValue,
-                        password: state.credentials.password,
-                    }
-                }));
+            const currentState = {...this.state};
+            currentState.credentials.login = newLoginValue;
+            this.setState({currentState});
+            // this.setState(state =>
+            //     Object.assign({}, state, {
+            //         credentials: {
+            //             login: newLoginValue,
+            //             password: state.credentials.password,
+            //         }
+            //     }));
         };
         /** user input inside PASSWORD field */
         this.updatePassword = (event) => {
             const newPasswordValue = event.target.value;
-            this.setState(state =>
-                Object.assign({}, state, {
-                    credentials: Object.assign({}, state.credentials, {
-                            // login: state.credentials.login,
-                            password: newPasswordValue,
-                        }
-                    )
-                }));
+            const currentState = {...this.state};
+            currentState.credentials.password = newPasswordValue;
+            this.setState({currentState});
+            // this.setState(state =>
+            //     Object.assign({}, state, {
+            //         credentials: Object.assign({}, state.credentials, {
+            //                 // login: state.credentials.login,
+            //                 password: newPasswordValue,
+            //             }
+            //         )
+            //     }));
         };
         /** user click on LOGIN button */
         this.handleLogin = () => {
@@ -90,6 +106,7 @@ class ConnectedLoginPage extends React.Component {
                 <Button
                     displayName={"Sign-in"}
                     onClick={this.handleLogin}
+                    disabled={this.state.form.submitDisabled}
                 />
             </div>
         );

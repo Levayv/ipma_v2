@@ -10,6 +10,7 @@ class Button extends React.Component {
             <button
                 className={"common-button"}
                 onClick={this.props.onClick}
+                disabled={this.props.disabled}
             >
                 {this.props.displayName}
             </button>
