@@ -29,11 +29,6 @@ export function loginAttempt(credentials) {
             {
                 email: credentials.login,
                 password: credentials.password,
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json"
-                }
             }
         ).then(response => dispatch(loginSuccess(credentials, response))
         ).catch(error => dispatch(loginFail(credentials, error)),

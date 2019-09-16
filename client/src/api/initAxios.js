@@ -1,5 +1,6 @@
 import axios from 'axios';
-// import store from '../redux/store'
+import {saveTokenToLocalStorage} from "./mapStoreToLocal";
+import {loadTokenFromLocalStorage} from "./mapStoreToLocal";
 
 export default function initAxios() {
 
@@ -9,28 +10,20 @@ export default function initAxios() {
 }
 
 function initAxiosConfiguration() {
-
+    axios.defaults.headers.common['Content-Type'] = 'application/json';
 }
 
 function initAxiosInterceptors() {
     axios.interceptors.request.use(function (request) { // .ts >> AxiosRequestConfig: request
 
-        // console.log("✉️ intercepted request")
-        // console.log("request = ...")
-        // console.log(request);
-
-        request.headers['Authorization'] = localStorage.getItem("token");
+        request.headers['Authorization'] = loadTokenFromLocalStorage();
 
         return request;
     });
 
     axios.interceptors.response.use(function (response) { // .ts >> AxiosResponse: response
 
-        // console.log("✉️ intercepted response")
-        // console.log("response = ...")
-        // console.log(response);
-
-        localStorage.setItem("token", response.headers['Authorization']);
+        saveTokenToLocalStorage(response.headers['Authorization']);
 
         return response;
     });

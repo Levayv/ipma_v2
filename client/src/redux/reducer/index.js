@@ -3,7 +3,7 @@ import {
     LOGIN_SUCCESS,
     LOGIN_FAIL,
 } from '../action-types';
-import forwardToken from "../../api/mapStoreToLocal";
+import {saveTokenToLocalStorage} from "../../api/mapStoreToLocal";
 
 // todo change default value
 /** Token's default value , when user is Unauthorized */
@@ -32,13 +32,13 @@ function root(state = initState, action) {
     // todo refactor to separate reducers and combine them
     if (action.type === LOGIN_SUCCESS) {
         const newToken = action.payload.response.data.access_token;
-        forwardToken(newToken);
+        saveTokenToLocalStorage(newToken);
         return Object.assign({}, state, {
             token: newToken
         });
     }
     if (action.type === LOGIN_FAIL) {
-        forwardToken(emptyToken);
+        saveTokenToLocalStorage(emptyToken);
         return Object.assign({}, state, {
             token: emptyToken
         });
