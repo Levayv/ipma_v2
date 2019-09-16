@@ -7,17 +7,6 @@ import {
     loginAttempt,
 } from "../../redux/action";
 
-//  tada * connect redux store
-//  tada * add button
-//  tada * button click must make request
-//  tada ** request endpoint is localhost:8000/api/auth/login
-//  todo ** request must have specified headers [see postman]
-//  todo *** optimise headers using axios's global config
-//  tada ** request must have body credentials
-//  todo * research axios interceptor
-//  todo * wrap axios inside custom "fetcher"
-//
-
 class ConnectedLoginPage extends React.Component {
     constructor(props) {
         super(props);
@@ -75,18 +64,6 @@ class ConnectedLoginPage extends React.Component {
         }
     }
 
-    // todo for testing only
-    // componentDidUpdate(prevProps, prevState, snapshot) {
-    //     console.log(" --- Component Did Update --- ")
-    //     console.log("current / previous state")
-    //     console.log(this.state)
-    //     console.log(prevState)
-    //     console.log("current / previous state")
-    //     console.log(this.props)
-    //     console.log(prevProps)
-    //     console.log(" --- END ---")
-    // }
-
     render() {
         return (
             <div>
@@ -113,17 +90,11 @@ class ConnectedLoginPage extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        token: state.token,
-    };
-};
-
 function mapDispatchToProps(dispatch) {
     return {
         loginAttempt: credentials => dispatch(loginAttempt(credentials)),
     };
 }
 
-const LoginPage = connect(mapStateToProps, mapDispatchToProps)(ConnectedLoginPage);
+const LoginPage = connect(null, mapDispatchToProps)(ConnectedLoginPage);
 export default LoginPage;

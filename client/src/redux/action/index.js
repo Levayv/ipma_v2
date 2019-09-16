@@ -19,21 +19,14 @@ export function loginFail(credentials, error) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// import {LOGIN_ATTEMPT} from "../action-types"
 
 export function loginAttempt(credentials) {
-    // return {type: LOGIN_ATTEMPT, payload}
     return function (dispatch) {
         return axios.post(
             "http://" + process.env.REACT_APP_BACKEND_IP_PORT + "/api/auth/login",
             {
                 email: credentials.login,
                 password: credentials.password,
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json"
-                }
             }
         ).then(response => dispatch(loginSuccess(credentials, response))
         ).catch(error => dispatch(loginFail(credentials, error)),
