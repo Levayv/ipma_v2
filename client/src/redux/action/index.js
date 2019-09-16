@@ -19,10 +19,8 @@ export function loginFail(credentials, error) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// import {LOGIN_ATTEMPT} from "../action-types"
 
 export function loginAttempt(credentials) {
-    // return {type: LOGIN_ATTEMPT, payload}
     return function (dispatch) {
         return axios.post(
             "http://" + process.env.REACT_APP_BACKEND_IP_PORT + "/api/auth/login",
