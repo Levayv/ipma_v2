@@ -11,11 +11,16 @@ class ConnectedLoginPage extends React.Component {
         this.state = {
             /** form control handlers */
             form: {
-                isSubmitEnabled: false,
                 validation: {
                     login: false,
                     password: false,
-                }
+                    isSubmitEnabled: false,
+                    errors: {
+                        login: [],
+                        password: [],
+                        isSubmitEnabled: [],
+                    }
+                },
             },
             /** user input of corresponding fields */
             credentials: {
@@ -32,8 +37,10 @@ class ConnectedLoginPage extends React.Component {
             const newLoginValue = event.target.value;
             const currentState = {...this.state};
             currentState.credentials.login = newLoginValue;
-            currentState.form.validation = this.validate(newLoginValue, null);
-            currentState.form.isSubmitEnabled = this.updateButton(currentState.form.validation);
+            // currentState.form.validation = this.validate(newLoginValue, null);
+            currentState.form.validation = this.validator.process(
+                {login: newLoginValue}, currentState.form.validation);
+            currentState.form.validation.isSubmitEnabled = this.updateButton(currentState.form.validation);
             this.setState({...currentState});
         };
         /** user input inside PASSWORD field */
@@ -41,8 +48,10 @@ class ConnectedLoginPage extends React.Component {
             const newPasswordValue = event.target.value;
             const currentState = {...this.state};
             currentState.credentials.password = newPasswordValue;
-            currentState.form.validation = this.validate(null, newPasswordValue);
-            currentState.form.isSubmitEnabled = this.updateButton(currentState.form.validation);
+            // currentState.form.validation = this.validate(newLoginValue, null);
+            currentState.form.validation = this.validator.process(
+                {password: newPasswordValue}, currentState.form.validation);
+            currentState.form.validation.isSubmitEnabled = this.updateButton(currentState.form.validation);
             this.setState({...currentState});
         };
         /** todo refactor updateButton  */
@@ -53,29 +62,114 @@ class ConnectedLoginPage extends React.Component {
         this.handleLogin = () => {
             this.props.loginAttempt(this.state.credentials);    // axios.post(
         };
-        //todo change to object , export to different file
-        this.validate = (loginArg, passwordArg) => {
-            /** validationResult
-             *  will be changed based on validateRules() function return value
-             *  will be returned to overwrite state.validation object during setState*/
-            const validationResult = {
-                login: this.state.form.validation.login,
-                password: this.state.form.validation.password,
-            };
-            const validationRules = {
-                /** set of rules to be executed separately.
-                 *  For validation to pass - all function callbacks must return true.
-                 *  see validateEachRule() function for implementation
+    }
+
+    componentDidMount() {
+        class Validator {
+            constructor(rules) {
+                /**
+                 *  set of rules to be executed separately.
+                 *  For validation to pass - all function callbacks must return true for appropriate key.
+                 *  see validateRules() function for implementation
                  * */
-                forLogin: {
+                this.rules = rules;
+                /**
+                 * @param inputData
+                 * @param previousValidationState this.state.form.validation
+                 * */
+                this.process = (inputData, previousValidationState) => {
+
+                    /** validationResult
+                     *  is populated from state
+                     *  will be changed based on validateRules() function return value
+                     *  will be returned to overwrite state.validation object during setState*/
+                    const validationResult = {...previousValidationState};
+
+                    //todo implement inputData foreach instead of validating only first key/value pair
+
+                    // get key of argument { login:"johndoe@mail.ru" }
+                    const key = Object.keys(inputData)[0];
+
+                    /**
+                     * combination of {
+                     *     isValid: state.validation // { key1:true key2:false }
+                     *     invalidErrors: state.validation.errors  // {key1:['err1','err2'] key2:[]}
+                     * }
+                     * */
+                    const mixedValidationResult = validateRules(this.rules[key], inputData[key]);
+
+                    validationResult[key] = mixedValidationResult.isValid;
+                    validationResult.errors[key] = mixedValidationResult.invalidErrors;
+
+                    return validationResult;
+
+                    // private functions
+                    function validateRules(rules, userInput) {
+                        let isValid = true; // is valid ? for all rules per key (of inputField) (login , password ...)
+                        let invalidErrors = [];
+                        for (let next in rules) {
+                            if (rules.hasOwnProperty(next)) {
+
+                                /**
+                                 * true if single validity rule fulfilled
+                                 * string if not , representing failure cause
+                                 * */
+                                let isValidForSingleRule = rules[next](userInput);
+                                // rule function will be lengthMin, lengthMax etc ...
+                                // see rules object passed to Validator Class constructor
+
+                                // if validation passed , returned true
+                                // if validation failed error text is returned
+                                if (typeof isValidForSingleRule === 'string') {
+                                    invalidErrors.push(isValidForSingleRule);
+
+                                    // changing string to boolean after extracting corresponding error to separate array
+                                    isValidForSingleRule = false;
+                                }
+                                // isValid will always be boolean type
+                                // combining validation result per single rule
+                                isValid = isValid && isValidForSingleRule;
+                            }
+                        }
+                        return {
+                            isValid: isValid,
+                            invalidErrors: invalidErrors
+                        };
+                    }
+                };
+            }
+        }
+
+        this.validator = new Validator(
+            /** see class Validator constructor */
+            {
+                /** key to match during Validator.process({key:value}, arg) */
+                login: {
+                    /** function names are purely ecstatic , using for(a of b) */
                     lengthMin: input => {
-                        return input.length >= 3;
+                        if (input.length >= 3) {
+                            return true;
+                        } else {
+                            return "length min bla bla";
+                        }
                     },
                     lengthMax: input => {
-                        return input.length < 300
+                        if (input.length < 300) {
+                            return true;
+                        } else {
+                            return "length max bla bla";
+                        }
                     },
+                    lengthTemp: input => {
+                        if (input.length >= 5) {
+                            return true;
+                        } else {
+                            return "length temp bla bla";
+                        }
+                    },
+
                 },
-                forPassword: {
+                password: {
                     lengthMin: input => {
                         return input.length >= 8
                     },
@@ -83,32 +177,12 @@ class ConnectedLoginPage extends React.Component {
                         return input.length < 32
                     },
                 },
-            };
+            },
+        )
+    }
 
-            /**
-             * Validate given rules for given user's input
-             * @param rules nested object of validationRules
-             * @param userInput value fetched from form
-             * */
-            function validateRules(rules, userInput) {
-                let isValid = true;
-                for (let next in rules) {
-                    if (rules.hasOwnProperty(next)) {
-                        isValid = isValid && rules[next](userInput);  // rule function will be lengthMin, lengthMax etc ...
-                    }
-                }
-                return isValid;
-            }
-
-            //todo refactor
-            if (loginArg !== null) {
-                validationResult.login = validateRules(validationRules.forLogin, loginArg);
-            }
-            if (passwordArg !== null) {
-                validationResult.password = validateRules(validationRules.forPassword, passwordArg);
-            }
-            return validationResult;
-        };
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log(this.state);
     }
 
     render() {
@@ -130,7 +204,7 @@ class ConnectedLoginPage extends React.Component {
                 <Button
                     displayName={"Sign-in"}
                     onClick={this.handleLogin}
-                    disabled={!this.state.form.isSubmitEnabled}
+                    disabled={!this.state.form.validation.isSubmitEnabled}
                 />
             </div>
         );
