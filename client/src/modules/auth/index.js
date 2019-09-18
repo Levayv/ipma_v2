@@ -1,5 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
+import { cloneDeep } from 'lodash';
+
 
 import {loginAttempt,} from "../../redux/action";
 
@@ -36,29 +38,20 @@ class ConnectedLoginPage extends React.Component {
                 // password: "",
             }
         };
-        /** user input inside LOGIN field */
-        this.updateLogin = (event) => {
-            const newLoginValue = event.target.value;
-            const currentState = {...this.state};
-            currentState.credentials.login = newLoginValue;
-            // currentState.form.validation = this.validate(newLoginValue, null);
-            currentState.form.validation = this.validator.process(
-                {login: newLoginValue}, currentState.form.validation);
+        /** handle user input according field type */
+        this.updateTextInput = (event) => {
+            const key = event.target.name;
+            const value = event.target.value;
+            const currentState = cloneDeep(this.state);
+
+            currentState.credentials[key] = value;
+            currentState.form.validation = this.validator.process({[key]: value}, currentState.form.validation);
             currentState.form.validation.isSubmitEnabled = this.updateButton(currentState.form.validation);
-            this.setState({...currentState});
+
+            this.setState(cloneDeep(currentState));
         };
-        /** user input inside PASSWORD field */
-        this.updatePassword = (event) => {
-            const newPasswordValue = event.target.value;
-            const currentState = {...this.state};
-            currentState.credentials.password = newPasswordValue;
-            // currentState.form.validation = this.validate(newLoginValue, null);
-            currentState.form.validation = this.validator.process(
-                {password: newPasswordValue}, currentState.form.validation);
-            currentState.form.validation.isSubmitEnabled = this.updateButton(currentState.form.validation);
-            this.setState({...currentState});
-        };
-        /** todo refactor updateButton  */
+
+        /** todo refactor updateButton , move to Validator object ? */
         this.updateButton = (validationData) => {
             return validationData.login && validationData.password;
         };
@@ -86,15 +79,17 @@ class ConnectedLoginPage extends React.Component {
             <div>
                 <h1>Login</h1>
                 <LabeledInput
+                    name={"login"}
                     displayName={"Login"}
                     placeholder={"YourEmail@mail.xx"}
-                    onChange={this.updateLogin}
+                    onChange={this.updateTextInput}
                     value={this.state.credentials.login}
                 />
                 <LabeledInput
+                    name={"password"}
                     displayName={"Password"}
                     placeholder={"1234"}
-                    onChange={this.updatePassword}
+                    onChange={this.updateTextInput}
                     value={this.state.credentials.password}
                 />
                 <Button

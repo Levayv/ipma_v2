@@ -15,7 +15,7 @@ export default class Validator {
          * */
         this.rules = rules;
         /**
-         * @param inputData
+         * @param inputData // {key:value , key:value} , for example { login:"johndoe@mail.ru" }
          * @param previousValidationState this.state.form.validation
          * */
         this.process = (inputData, previousValidationState) => {
@@ -28,7 +28,7 @@ export default class Validator {
 
             //todo implement inputData foreach instead of validating only first key/value pair
 
-            // get key of argument { login:"johndoe@mail.ru" }
+            // get key of argument
             const key = Object.keys(inputData)[0];
 
             /**
@@ -84,15 +84,15 @@ export default class Validator {
 }
 
 /**
- * @param fieldKeyNames undefined|string Array , representing key names of fields
- *      case string Array will provide rules only matching the keys provided
- *      case undefined will provide all predefined rules
+ * @param keyNames undefined|string Array , representing key names of fields,
+ *      CASE string Array will provide rules only matching the keys provided,
+ *      CASE undefined will provide all predefined rules.
  * */
-export function createRulesFor(fieldKeyNames) {
-    if (fieldKeyNames === undefined) {
+export function createRulesFor(keyNames) {
+    if (keyNames === undefined) {
         return getCoreRules();
     }
-    return combineRules(fieldKeyNames);
+    return combineRules(keyNames);
 }
 
 /**

@@ -5,11 +5,12 @@ import Label from './Label'
 class LabeledInput extends React.Component {
     render() {
         return (
-            <div className={"labeled-input"}>
+            <div className={"common-labeled-input"}>
                 <Label
                     displayName={this.props.displayName}
                 />
                 <Input
+                    name={this.props.name}
                     value={this.props.value}
                     placeholder={this.props.placeholder}
                     onChange={this.props.onChange}
