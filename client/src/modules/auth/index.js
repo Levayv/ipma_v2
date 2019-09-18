@@ -1,9 +1,13 @@
 import React from "react";
 import {connect} from "react-redux";
 
+import {loginAttempt,} from "../../redux/action";
+
 import LabeledInput from "../common/LabeledInput";
 import Button from "../common/Button";
-import {loginAttempt,} from "../../redux/action";
+import Validator from '../common/Validator'
+import {createRulesFor} from '../common/Validator'
+
 
 class ConnectedLoginPage extends React.Component {
     constructor(props) {
@@ -65,120 +69,12 @@ class ConnectedLoginPage extends React.Component {
     }
 
     componentDidMount() {
-        class Validator {
-            constructor(rules) {
-                /**
-                 *  set of rules to be executed separately.
-                 *  For validation to pass - all function callbacks must return true for appropriate key.
-                 *  see validateRules() function for implementation
-                 * */
-                this.rules = rules;
-                /**
-                 * @param inputData
-                 * @param previousValidationState this.state.form.validation
-                 * */
-                this.process = (inputData, previousValidationState) => {
+        const rules = createRulesFor([
+            'login',
+            'password',
+        ]);
 
-                    /** validationResult
-                     *  is populated from state
-                     *  will be changed based on validateRules() function return value
-                     *  will be returned to overwrite state.validation object during setState*/
-                    const validationResult = {...previousValidationState};
-
-                    //todo implement inputData foreach instead of validating only first key/value pair
-
-                    // get key of argument { login:"johndoe@mail.ru" }
-                    const key = Object.keys(inputData)[0];
-
-                    /**
-                     * combination of {
-                     *     isValid: state.validation // { key1:true key2:false }
-                     *     invalidErrors: state.validation.errors  // {key1:['err1','err2'] key2:[]}
-                     * }
-                     * */
-                    const mixedValidationResult = validateRules(this.rules[key], inputData[key]);
-
-                    validationResult[key] = mixedValidationResult.isValid;
-                    validationResult.errors[key] = mixedValidationResult.invalidErrors;
-
-                    return validationResult;
-
-                    // private functions
-                    function validateRules(rules, userInput) {
-                        let isValid = true; // is valid ? for all rules per key (of inputField) (login , password ...)
-                        let invalidErrors = [];
-                        for (let next in rules) {
-                            if (rules.hasOwnProperty(next)) {
-
-                                /**
-                                 * true if single validity rule fulfilled
-                                 * string if not , representing failure cause
-                                 * */
-                                let isValidForSingleRule = rules[next](userInput);
-                                // rule function will be lengthMin, lengthMax etc ...
-                                // see rules object passed to Validator Class constructor
-
-                                // if validation passed , returned true
-                                // if validation failed error text is returned
-                                if (typeof isValidForSingleRule === 'string') {
-                                    invalidErrors.push(isValidForSingleRule);
-
-                                    // changing string to boolean after extracting corresponding error to separate array
-                                    isValidForSingleRule = false;
-                                }
-                                // isValid will always be boolean type
-                                // combining validation result per single rule
-                                isValid = isValid && isValidForSingleRule;
-                            }
-                        }
-                        return {
-                            isValid: isValid,
-                            invalidErrors: invalidErrors
-                        };
-                    }
-                };
-            }
-        }
-
-        this.validator = new Validator(
-            /** see class Validator constructor */
-            {
-                /** key to match during Validator.process({key:value}, arg) */
-                login: {
-                    /** function names are purely ecstatic , using for(a of b) */
-                    lengthMin: input => {
-                        if (input.length >= 3) {
-                            return true;
-                        } else {
-                            return "length min bla bla";
-                        }
-                    },
-                    lengthMax: input => {
-                        if (input.length < 300) {
-                            return true;
-                        } else {
-                            return "length max bla bla";
-                        }
-                    },
-                    lengthTemp: input => {
-                        if (input.length >= 5) {
-                            return true;
-                        } else {
-                            return "length temp bla bla";
-                        }
-                    },
-
-                },
-                password: {
-                    lengthMin: input => {
-                        return input.length >= 8
-                    },
-                    lengthMax: input => {
-                        return input.length < 32
-                    },
-                },
-            },
-        )
+        this.validator = new Validator(rules);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {

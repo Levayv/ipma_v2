@@ -7,7 +7,7 @@ class LabeledInput extends React.Component {
         return (
             <div className={"labeled-input"}>
                 <Label
-                    displayName = {this.props.displayName}
+                    displayName={this.props.displayName}
                 />
                 <Input
                     value={this.props.value}
