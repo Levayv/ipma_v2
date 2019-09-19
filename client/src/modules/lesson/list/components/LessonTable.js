@@ -23,6 +23,7 @@ class LessonTable extends React.Component {
                         key={element.id}
                         lesson={element}
                         index={index + 1}
+                        refresh={this.props.refresh}
                     />);
                 }
             );

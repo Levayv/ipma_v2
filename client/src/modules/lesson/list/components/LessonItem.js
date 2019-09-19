@@ -29,8 +29,7 @@ class LessonItem extends React.Component {
             console.log("delete success");
             console.log(response);
             this.setState({deletionInProgress: false});
-
-            //todo add refresh
+            this.props.refresh();
         };
         this.deleteFailure = (error) => {
             console.log("delete failed");

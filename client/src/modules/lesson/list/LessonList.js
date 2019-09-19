@@ -4,18 +4,28 @@ import axios from "axios";
 import {cloneDeep} from 'lodash';
 
 import LessonTable from "./components/LessonTable"
+import Button from "../../common/Button";
 
 class ConnectedLessonList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.initialState = {
             result: {
                 ready: false,
                 success: false,
                 data: {},
-                error: "!",
+                error: "",
             }
         };
+        this.state = this.initialState;
+
+        this.refresh = () => {
+            this.setState(
+                this.initialState,
+                this.fetchAttempt
+            );
+        };
+        /** fetch lessons list from server */
         this.fetchAttempt = () => {
             axios.get(
                 "http://" + process.env.REACT_APP_BACKEND_IP_PORT + "/api/lesson",
@@ -41,16 +51,20 @@ class ConnectedLessonList extends React.Component {
     }
 
     componentDidMount() {
-        //todo add refresh button
         this.fetchAttempt();
     }
 
     render() {
         const showLessonsWhenReady = () => {
             if (this.state.result.ready) {
-                if (this.state.result.success){
-                    return <LessonTable dataList={this.state.result.data}/>
-                }else {
+                if (this.state.result.success) {
+                    return (
+                        <LessonTable
+                            dataList={this.state.result.data}
+                            refresh={this.refresh}
+                        />
+                    )
+                } else {
                     return <span>
                         <h2> Something went wrong </h2>
                         <h4> {this.state.result.error} </h4>
@@ -60,8 +74,17 @@ class ConnectedLessonList extends React.Component {
                 return <span> loading </span>
             }
         };
-
+        const showRefreshButton = () => {
+            return (
+                <Button
+                    name={"refresh"}
+                    displayName={"Refresh"}
+                    onClick={this.refresh}
+                />
+            )
+        };
         return (<div>
+                {showRefreshButton()}
                 {showLessonsWhenReady()}
             </div>
         );
