@@ -1,61 +1,73 @@
 import React from "react";
+// import {cloneDeep} from 'lodash';
+import axios from 'axios';
+
 import Button from "../../../common/Button"
 import history from "../../../../route/history";
 
 class LessonItem extends React.Component {
     constructor(props) {
         super(props);
-        //todo refactor
-        this.handleEdit = (event) =>{
-            const recordID = this.extractRecordID(
-                event.target.id ,
-                event.target.className
-            );
-            // Redirecting to Edit form
-            history.push("/lesson/edit/"+recordID)
+        this.handleEdit = () => {
+            history.push("/lesson/edit/" + this.props.lesson.id);
         };
-        //todo refactor
-        this.handleDelete = (event) =>{
-            const recordID = this.extractRecordID(
-                event.target.id ,
-                event.target.className
-            );
-            // Redirecting to Delete form
-            history.push("/lesson/delete/"+recordID)
+        this.handleDelete = () => {
+            this.deleteAttempt(this.props.lesson.id);
+
+            // Redirecting to Delete form //todo change to popup
+            // history.push("/lesson/delete/"+recordID)
         };
-        //todo refactor
-        this.extractRecordID = (id , classname) => {
-            return id.substr(
-                classname.length + 16
-            )
-        }
+        this.deleteAttempt = (id) => {
+            this.setState({deletionInProgress: true});
+            axios.delete(
+                "http://" + process.env.REACT_APP_BACKEND_IP_PORT + "/api/lesson/" + id
+            ).then(response => this.deleteSuccess(response)
+            ).catch(error => this.deleteFailure(error)
+            );
+        };
+        this.deleteSuccess = (response) => {
+            console.log("delete success");
+            console.log(response);
+            this.setState({deletionInProgress: false});
+
+            //todo add refresh
+        };
+        this.deleteFailure = (error) => {
+            console.log("delete failed");
+            console.log(error);
+            this.setState({deleting: false});
+
+        };
     }
 
     render() {
-        const lesson = this.props.singleLesson;
+        console.log("! id = " + this.props.lesson.id);
+        const lesson = this.props.lesson;
         return (
             <tr>
-                <td className="datum" >
+                <td className="datum">
                     {this.props.index}
                 </td>
-                <td className="datum" >
+                <td className="datum">
                     {lesson.name}
                 </td>
-                <td className="datum" >
+                <td className="datum">
                     {lesson.link}
                 </td>
                 <td>
                     <Button
                         name={"edit"}
-                        addToClass={"datum"}
+                        displayName={"Edit"}
+                        extraClassName={"datum"}
                         recordID={lesson.id}
-                        handleClick={this.handleEdit}
+                        onClick={this.handleEdit}
                     />
                     <Button
                         name={"delete"}
-                        addToClass={"datum"}
+                        displayName={"Delete"}
+                        extraClassName={"datum"}
                         recordID={lesson.id}
-                        handleClick={this.handleDelete}
+                        onClick={this.handleDelete}
                     />
                 </td>
             </tr>

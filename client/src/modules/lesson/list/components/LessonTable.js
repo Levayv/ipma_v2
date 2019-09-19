@@ -21,7 +21,7 @@ class LessonTable extends React.Component {
                 (element, index) => {
                     return (<LessonItem
                         key={element.id}
-                        singleLesson={element}
+                        lesson={element}
                         index={index + 1}
                     />);
                 }

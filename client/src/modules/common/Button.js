@@ -8,7 +8,7 @@ class Button extends React.Component {
             className += ' ' + this.props.name + '-button';
         }
         if (this.props.extraClassName !== undefined){
-            className += ' ' + this.props.addToClass;
+            className += ' ' + this.props.extraClassName;
         }
 
         return (

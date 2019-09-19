@@ -26,7 +26,8 @@ class CheckLessonAvailability
         $lesson = Lesson::query()->find($id);
         if (!$lesson) {
             return response()->json(
-                LessonController::getJsonFail(null)
+                LessonController::getJsonFail(null),
+                404
             );
         }
         return $next($request);
