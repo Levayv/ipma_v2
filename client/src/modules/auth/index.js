@@ -1,12 +1,12 @@
-import React from "react";
-import {connect} from "react-redux";
+import React from 'react';
+import {connect} from 'react-redux';
 import { cloneDeep } from 'lodash';
 
 
-import {loginAttempt,} from "../../redux/action";
+import {loginAttempt,} from '../../redux/action';
 
-import LabeledInput from "../common/LabeledInput";
-import Button from "../common/Button";
+import LabeledInput from '../common/LabeledInput';
+import Button from '../common/Button';
 import Validator from '../common/Validator'
 import {createRulesFor} from '../common/Validator'
 
@@ -21,10 +21,10 @@ class ConnectedLoginPage extends React.Component {
                     /** user input of corresponding fields */
                     credentials: {
                         //todo STOPSHIP for testing purposes , default values must be empty strings
-                        login: "levayv@mail.ru",
-                        password: "123456789",
-                        // login: "",
-                        // password: "",
+                        login: 'levayv@mail.ru',
+                        password: '123456789',
+                        // login: '',
+                        // password: '',
                     }
                 },
                 validation: {
@@ -81,23 +81,24 @@ class ConnectedLoginPage extends React.Component {
             <div>
                 <h1>Login</h1>
                 <LabeledInput
-                    name={"login"}
-                    displayName={"Login"}
-                    placeholder={"YourEmail@mail.xx"}
+                    name={'login'}
+                    displayName={'Login'}
+                    placeholder={'YourEmail@mail.xx'}
                     onChange={this.updateTextInput}
                     value={this.state.form.data.credentials}
                     errors={this.state.form.validation.errors}
                 />
                 <LabeledInput
-                    name={"password"}
-                    displayName={"Password"}
-                    placeholder={"1234"}
+                    name={'password'}
+                    displayName={'Password'}
+                    placeholder={'1234'}
                     onChange={this.updateTextInput}
                     value={this.state.form.data.credentials}
                     errors={this.state.form.validation.errors}
                 />
                 <Button
-                    displayName={"Sign-in"}
+                    name={'submit'}
+                    displayName={'Sign-in'}
                     onClick={this.handleLogin}
                     disabled={!this.state.form.validation.isSubmitEnabled}
                 />

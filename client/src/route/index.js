@@ -9,8 +9,8 @@ import {
 import history from "./history";
 import LoginPage from "../modules/auth";
 import LessonForm from "../modules/lesson/form/LessonForm";
+import LessonList from "../modules/lesson/list/LessonList";
 
-// import LessonList from "./modules/lesson/list/LessonList";
 // import LessonDelete from "./modules/lesson/form/LessonDelete";
 
 import initialize from "../config/init";
@@ -73,7 +73,7 @@ function Auth({match}) {
 function Lesson({match}) {
     return (<div>
         <Route exact path={`${match.path}/form/`} component={LessonForm}/>
-        {/*<Route exact path={`${match.path}/list/`} component={LessonList}/>*/}
+        <Route exact path={`${match.path}/list/`} component={LessonList}/>
         {/*<Route exact path={`${match.path}/edit/`}*/}
         {/*       render={() => {*/}
         {/*           alert("Please use edit button inside List of Lessons");*/}
