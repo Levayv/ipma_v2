@@ -90,7 +90,8 @@ class LessonController extends Controller
         $validator = Validator::make($request->all(), $this->requiredFieldSet);
         if ($validator->fails()) {
             return response()->json(
-                self::getJsonFail($validator->errors())
+                self::getJsonFail($validator->errors()),
+                422
             );
         }
 

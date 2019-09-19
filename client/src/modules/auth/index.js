@@ -17,6 +17,16 @@ class ConnectedLoginPage extends React.Component {
         this.state = {
             /** form control handlers */
             form: {
+                data:{
+                    /** user input of corresponding fields */
+                    credentials: {
+                        //todo STOPSHIP for testing purposes , default values must be empty strings
+                        login: "levayv@mail.ru",
+                        password: "123456789",
+                        // login: "",
+                        // password: "",
+                    }
+                },
                 validation: {
                     login: false,
                     password: false,
@@ -28,15 +38,7 @@ class ConnectedLoginPage extends React.Component {
                     }
                 },
             },
-            /** user input of corresponding fields */
-            credentials: {
-                //todo STOPSHIP for testing purposes , default values must be empty strings
-                //todo research uncontrolled input in React and refactor accordingly
-                login: "levayv@mail.ru",
-                password: "123456789",
-                // login: "",
-                // password: "",
-            }
+
         };
         /** handle user input according field type */
         this.updateTextInput = (event) => {
@@ -44,11 +46,11 @@ class ConnectedLoginPage extends React.Component {
             const value = event.target.value;
             const currentState = cloneDeep(this.state);
 
-            currentState.credentials[key] = value;
+            currentState.form.data.credentials[key] = value;
             currentState.form.validation = this.validator.process({[key]: value}, currentState.form.validation);
             currentState.form.validation.isSubmitEnabled = this.updateButton(currentState.form.validation);
 
-            this.setState(cloneDeep(currentState));
+            this.setState(currentState);
         };
 
         /** todo refactor updateButton , move to Validator object ? */
@@ -57,7 +59,7 @@ class ConnectedLoginPage extends React.Component {
         };
         /** user click on LOGIN button */
         this.handleLogin = () => {
-            this.props.loginAttempt(this.state.credentials);    // axios.post(
+            this.props.loginAttempt(this.state.form.data.credentials);    // axios.post(
         };
     }
 
@@ -83,14 +85,16 @@ class ConnectedLoginPage extends React.Component {
                     displayName={"Login"}
                     placeholder={"YourEmail@mail.xx"}
                     onChange={this.updateTextInput}
-                    value={this.state.credentials.login}
+                    value={this.state.form.data.credentials}
+                    errors={this.state.form.validation.errors}
                 />
                 <LabeledInput
                     name={"password"}
                     displayName={"Password"}
                     placeholder={"1234"}
                     onChange={this.updateTextInput}
-                    value={this.state.credentials.password}
+                    value={this.state.form.data.credentials}
+                    errors={this.state.form.validation.errors}
                 />
                 <Button
                     displayName={"Sign-in"}

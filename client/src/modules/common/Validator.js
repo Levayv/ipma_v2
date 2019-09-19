@@ -24,7 +24,7 @@ export default class Validator {
              *  is populated from state
              *  will be changed based on validateRules() function return value
              *  will be returned to overwrite state.validation object during setState*/
-            const validationResult = {...previousValidationState};
+            const validationResult = previousValidationState; //todo use lodash deep clone ?
 
             //todo implement inputData foreach instead of validating only first key/value pair
 
@@ -141,10 +141,45 @@ function getCoreRules() {
         },
         password: {
             lengthMin: input => {
-                return input.length >= 8
+                if (input.length >= 3) {
+                    return true;
+                } else {
+                    return "length min >= 3 bla bla bla";
+                }
             },
             lengthMax: input => {
-                return input.length < 32
+                if (input.length >= 3) {
+                    return true;
+                } else {
+                    return "length min >= 3 bla bla bla";
+                }
+            },
+        },
+        name: {
+            lengthMin: input => {
+                if (input.length >= 3) {
+                    return true;
+                } else {
+                    return "length min >= 3 bla bla bla";
+                }
+            },
+        },
+        link: {
+            lengthMin: input => {
+                if (input.length >= 3) {
+                    return true;
+                } else {
+                    return "length min >= 3 bla bla bla";
+                }
+            },
+        },
+        topic: {
+            lengthMin: input => {
+                if (input.length >= 3) {
+                    return true;
+                } else {
+                    return "length min >= 3 bla bla bla";
+                }
             },
         },
     }

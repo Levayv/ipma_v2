@@ -1,6 +1,8 @@
 import {
     LOGIN_SUCCESS,
     LOGIN_FAIL,
+    LESSON_CREATE_SUCCESS,
+    LESSON_CREATE_FAIL,
 } from '../action-types';
 import {saveTokenToLocalStorage} from "../../api/mapStoreToLocal";
 
@@ -24,6 +26,20 @@ function root(state = initState, action) {
     }
     if (action.type === LOGIN_FAIL) {
         saveTokenToLocalStorage(emptyToken);
+        return Object.assign({}, state, {
+            token: emptyToken
+        });
+
+    }
+    if (action.type === LESSON_CREATE_SUCCESS) {
+        const newToken = action.payload.response.data.access_token;
+        // saveTokenToLocalStorage(newToken);
+        return Object.assign({}, state, {
+            token: newToken
+        });
+    }
+    if (action.type === LESSON_CREATE_FAIL) {
+        // saveTokenToLocalStorage(emptyToken);
         return Object.assign({}, state, {
             token: emptyToken
         });
