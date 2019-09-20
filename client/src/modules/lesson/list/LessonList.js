@@ -4,13 +4,13 @@ import {cloneDeep} from 'lodash';
 
 import LessonTable from "./components/LessonTable"
 import Button from "../../common/Button";
-import {lessonReadBulkAttempt} from '../../../redux/action';
+import {readBulkLessonAttempt} from '../../../redux/action';
 
 class ConnectedLessonList extends React.Component {
     constructor(props) {
         super(props);
         this.refresh = () => {
-            this.props.lessonReadBulkAttempt();
+            this.props.fetchLessons();
         };
     }
 
@@ -60,23 +60,15 @@ class ConnectedLessonList extends React.Component {
     }
 }
 
-// todo get UserName and Role from Redux Store
-// const mapStateToProps = state => {
-//     return {
-//         // userName: state.user.name
-//         // role: state.user.role
-//     };
-// };
-
 const mapStateToProps = state => {
     return {
-        lessons: state.lessons,
+        lessons: state.lesson.bulk,
     };
 };
 
 function mapDispatchToProps(dispatch) {
     return {
-        lessonReadBulkAttempt: lesson => dispatch(lessonReadBulkAttempt(lesson))
+        fetchLessons: lesson => dispatch(readBulkLessonAttempt(lesson))
     };
 }
 

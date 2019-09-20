@@ -8,7 +8,8 @@ import {
 
 import history from "./history";
 import LoginPage from "../modules/auth";
-import LessonForm from "../modules/lesson/form/LessonForm";
+import LessonAddForm from "../modules/lesson/form/Add";
+import LessonEditForm from "../modules/lesson/form/Edit";
 import LessonList from "../modules/lesson/list/LessonList";
 
 // import LessonDelete from "./modules/lesson/form/LessonDelete";
@@ -42,9 +43,6 @@ class AppRouter extends Component {
                             <li id={"router-nav-form"}><Link to="/lesson/form">
                                 Form
                             </Link></li>
-                            <li id={"router-nav-edit"}><Link to="/lesson/edit">
-                                Edit
-                            </Link></li>
                         </ul>
                         <hr/>
                     </nav>
@@ -72,15 +70,15 @@ function Auth({match}) {
 }
 function Lesson({match}) {
     return (<div>
-        <Route exact path={`${match.path}/form/`} component={LessonForm}/>
         <Route exact path={`${match.path}/list/`} component={LessonList}/>
+        <Route exact path={`${match.path}/form/`} component={LessonAddForm}/>
+        <Route path={`${match.path}/edit/:recordID`} component={LessonEditForm}/>
         {/*<Route exact path={`${match.path}/edit/`}*/}
         {/*       render={() => {*/}
         {/*           alert("Please use edit button inside List of Lessons");*/}
         {/*           // history.push("/lesson/list")*/}
         {/*           return (<Redirect to={{pathname: "/lesson/list",}}/>)*/}
         {/*       }}/>*/}
-        {/*<Route path={`${match.path}/edit/:recordID`} component={LessonForm}/>*/}
         {/*<Route path={`${match.path}/delete/:recordID`} component={LessonDelete}/>*/}
     </div>)
 }

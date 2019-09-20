@@ -28,7 +28,7 @@ class LessonTable extends React.Component {
                 }
             );
         } else {
-            tableBody = <tr> <td> Nothing to show </td> </tr>;
+            tableBody = <tr><td> Nothing to show </td></tr>;
         }
 
         return (
