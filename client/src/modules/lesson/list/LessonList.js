@@ -1,80 +1,49 @@
 import React from "react";
 import {connect} from "react-redux";
-import axios from "axios";
 import {cloneDeep} from 'lodash';
 
 import LessonTable from "./components/LessonTable"
 import Button from "../../common/Button";
+import {lessonReadBulkAttempt} from '../../../redux/action';
 
 class ConnectedLessonList extends React.Component {
     constructor(props) {
         super(props);
-        this.initialState = {
-            result: {
-                ready: false,
-                success: false,
-                data: {},
-                error: "",
-            }
-        };
-        this.state = this.initialState;
-
         this.refresh = () => {
-            this.setState(
-                this.initialState,
-                this.fetchAttempt
-            );
-        };
-        /** fetch lessons list from server */
-        this.fetchAttempt = () => {
-            axios.get(
-                "http://" + process.env.REACT_APP_BACKEND_IP_PORT + "/api/lesson",
-            ).then(response => this.fetchSuccess(response)
-            ).catch(error => this.fetchFailure(error)
-            );
-        };
-        this.fetchSuccess = (response) => {
-            let newState = cloneDeep(this.state);
-            newState.result.data = {}; // todo research
-            newState.result.data = response.data;
-            newState.result.ready = true;
-            newState.result.success = true;
-            this.setState(newState);
-        };
-        this.fetchFailure = (error) => {
-            let newState = cloneDeep(this.state);
-            newState.result.ready = true;
-            newState.result.success = false;
-            newState.result.error = error.toString();
-            this.setState(newState);
+            this.props.lessonReadBulkAttempt();
         };
     }
 
     componentDidMount() {
-        this.fetchAttempt();
+        this.refresh();
     }
 
     render() {
-        const showLessonsWhenReady = () => {
-            if (this.state.result.ready) {
-                if (this.state.result.success) {
+        let data = cloneDeep(this.props.lessons.data);
+        let error = cloneDeep(this.props.lessons.error);
+        let ready = cloneDeep(! this.props.lessons.loading);
+        let success = (error.length === 0);
+
+        let showLessonsWhenReady = () => {
+            if (ready) {
+                if (success) {
                     return (
                         <LessonTable
-                            dataList={this.state.result.data}
+                            dataList={data}
                             refresh={this.refresh}
                         />
                     )
                 } else {
                     return <span>
                         <h2> Something went wrong </h2>
-                        <h4> {this.state.result.error} </h4>
+                        <h4> {error} </h4>
                     </span>
                 }
             } else {
                 return <span> loading </span>
             }
         };
-        const showRefreshButton = () => {
+        let showRefreshButton = () => {
             return (
                 <Button
                     name={"refresh"}
@@ -99,5 +68,17 @@ class ConnectedLessonList extends React.Component {
 //     };
 // };
 
-const LessonList = connect(/*mapStateToProps, mapDispatchToProps*/)(ConnectedLessonList);
+const mapStateToProps = state => {
+    return {
+        lessons: state.lessons,
+    };
+};
+
+function mapDispatchToProps(dispatch) {
+    return {
+        lessonReadBulkAttempt: lesson => dispatch(lessonReadBulkAttempt(lesson))
+    };
+}
+
+const LessonList = connect(mapStateToProps, mapDispatchToProps)(ConnectedLessonList);
 export default LessonList;

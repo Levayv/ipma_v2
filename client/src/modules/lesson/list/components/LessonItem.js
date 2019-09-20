@@ -40,7 +40,6 @@ class LessonItem extends React.Component {
     }
 
     render() {
-        console.log("! id = " + this.props.lesson.id);
         const lesson = this.props.lesson;
         return (
             <tr>
