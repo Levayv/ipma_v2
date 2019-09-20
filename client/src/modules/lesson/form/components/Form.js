@@ -22,6 +22,7 @@ class LessonForm extends React.Component {
             /** form control handlers */
             form: {
                 data: {
+                    id: 0,
                     name: "",
                     link: "",
                     topic: "",
@@ -83,15 +84,32 @@ class LessonForm extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.editData !== undefined) {
+            if (this.state.form.data.id !== this.props.editData.id) {
+                const newState = cloneDeep(this.state);
+                newState.form.data = this.props.editData;
 
+                newState.form.validation.name = true;
+                newState.form.validation.link = true;
+                newState.form.validation.topic = true;
+                newState.form.validation.isSubmitEnabled = true;
+
+                this.updateButton(newState.form.validation);
+                this.setState(newState);
+            }
+        }
     }
 
     render() {
+        console.log("componentDidUpdate old id = " + this.state.form.data.id);
+        console.log("componentDidUpdate new id = "
+            + ((this.props.editData) ? (this.props.editData.id) : ("none")));
+
         //todo refactor
         const showButtonName = () => {
-            if (this.props.isLoading){
+            if (this.props.isLoading) {
                 return "Saving"
-            }else{
+            } else {
                 return "Save Lesson"
             }
         };

@@ -39,6 +39,10 @@ const lessonReducer = (state = initialState, action) => {
         const newState_Lesson_Single = cloneDeep(state.single);
         newState_Lesson_Single.loading = false;
         newState_Lesson_Single.data = action.payload.response.data;
+
+        // todo hotfix
+        newState_Lesson_Single.data.topic = action.payload.response.data.topic_id;
+
         return Object.assign({}, state, {
             single: newState_Lesson_Single
         });
