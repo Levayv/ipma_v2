@@ -1,20 +1,23 @@
-import React, {Component} from "react";
+import React from "react";
 import {connect} from "react-redux";
 import {cloneDeep} from "lodash";
 
 
-import {lessonCreateAttempt} from "../../../redux/action";
-import LabeledInput from "../../common/LabeledInput";
-import Button from "../../common/Button";
-import Validator, {createRulesFor} from "../../common/Validator";
+import {lessonCreateAttempt} from "../../../../redux/action";
+import LabeledInput from "../../../common/LabeledInput";
+import Button from "../../../common/Button";
+import Validator, {createRulesFor} from "../../../common/Validator";
 
 // import LabeledInput from "./components/LabeledInput";
 // import FormSubmitButton from "./components/FormSubmitButton";
 // import history from "../../../route/history";
 
-class ConnectedLessonForm extends Component {
+class LessonForm extends React.Component {
     constructor(props) {
         super(props);
+
+        // populate state from props if edit
+
         this.state = {
             /** form control handlers */
             form: {
@@ -45,8 +48,8 @@ class ConnectedLessonForm extends Component {
             const key = event.target.name;
             const value = event.target.value;
             const currentState = cloneDeep(this.state);
-            console.log(key);
-            console.log(value);
+            // console.log(key);
+            // console.log(value);
 
             currentState.form.data[key] = value;
             currentState.form.validation = this.validator.process(
@@ -64,10 +67,11 @@ class ConnectedLessonForm extends Component {
                 ;
         };
         this.handleSubmit = () => {
-            this.props.lessonCreateAttempt(this.state.form.data);    // axios.post(
+            this.props.handleSubmit(this.state.form.data);    // axios.post(
         };
 
     }
+
     componentDidMount() {
         const rules = createRulesFor([
             'name',
@@ -77,11 +81,20 @@ class ConnectedLessonForm extends Component {
 
         this.validator = new Validator(rules);
     }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(this.state.form.validation.errors)
+
     }
 
     render() {
+        //todo refactor
+        const showButtonName = () => {
+            if (this.props.isLoading){
+                return "Saving"
+            }else{
+                return "Save Lesson"
+            }
+        };
         return (
             <div>
                 <h1>Form</h1>
@@ -110,20 +123,13 @@ class ConnectedLessonForm extends Component {
                     errors={this.state.form.validation.errors}
                 />
                 <Button
-                    displayName={"Save Lesson"}
+                    displayName={showButtonName()}
                     onClick={this.handleSubmit}
-                    disabled={!this.state.form.validation.isSubmitEnabled}
+                    disabled={!this.state.form.validation.isSubmitEnabled || this.props.isLoading}
                 />
             </div>
         )
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        lessonCreateAttempt: lesson => dispatch(lessonCreateAttempt(lesson))
-    };
-}
-
-const LessonForm = connect(null, mapDispatchToProps)(ConnectedLessonForm);
 export default LessonForm;
