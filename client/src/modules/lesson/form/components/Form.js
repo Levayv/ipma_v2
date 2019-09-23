@@ -1,23 +1,14 @@
 import React from "react";
-import {connect} from "react-redux";
+import PropTypes from 'prop-types';
 import {cloneDeep} from "lodash";
 
-
-import {lessonCreateAttempt} from "../../../../redux/action";
 import LabeledInput from "../../../common/LabeledInput";
 import Button from "../../../common/Button";
 import Validator, {createRulesFor} from "../../../common/Validator";
 
-// import LabeledInput from "./components/LabeledInput";
-// import FormSubmitButton from "./components/FormSubmitButton";
-// import history from "../../../route/history";
-
 class LessonForm extends React.Component {
     constructor(props) {
         super(props);
-
-        // populate state from props if edit
-
         this.state = {
             /** form control handlers */
             form: {
@@ -44,13 +35,10 @@ class LessonForm extends React.Component {
 
 
         /** handle user input according to field type */
-        // todo consider extracted function to separate file
         this.updateTextInput = (event) => {
             const key = event.target.name;
             const value = event.target.value;
             const currentState = cloneDeep(this.state);
-            // console.log(key);
-            // console.log(value);
 
             currentState.form.data[key] = value;
             currentState.form.validation = this.validator.process(
@@ -101,21 +89,18 @@ class LessonForm extends React.Component {
     }
 
     render() {
-        console.log("componentDidUpdate old id = " + this.state.form.data.id);
-        console.log("componentDidUpdate new id = "
-            + ((this.props.editData) ? (this.props.editData.id) : ("none")));
-
-        //todo refactor
-        const showButtonName = () => {
-            if (this.props.isLoading) {
-                return "Saving"
-            } else {
-                return "Save Lesson"
-            }
+        const getButtonDisplayName = (name) => {
+            name = this.props.isLoading
+                ? (name + "ing Lesson")
+                : (name + " Lesson");
+            return name;
+        };
+        const getHeaderDisplayName = (name) => {
+            return (name + " Lesson Form");
         };
         return (
             <div>
-                <h1>Form</h1>
+                <h1>{getHeaderDisplayName(this.props.displayName)}</h1>
                 <LabeledInput
                     name={"name"}
                     displayName={"Lesson's name"}
@@ -141,7 +126,7 @@ class LessonForm extends React.Component {
                     errors={this.state.form.validation.errors}
                 />
                 <Button
-                    displayName={showButtonName()}
+                    displayName={getButtonDisplayName(this.props.displayName)}
                     onClick={this.handleSubmit}
                     disabled={!this.state.form.validation.isSubmitEnabled || this.props.isLoading}
                 />
@@ -150,4 +135,34 @@ class LessonForm extends React.Component {
     }
 }
 
+LessonForm.propTypes = {
+    /**
+     * Representation of form functionality
+     *  either Save or Update
+     *
+     *  Used inside conditional rendering methods of Form.js
+     *
+     * */
+    displayName: PropTypes.string.isRequired,
+    /**
+     * function callback
+     *
+     * 1. change the props.isLoading to true
+     * 2. attempt to fetch the resource (post)
+     * 3. change the props.isLoading back to false
+     *
+     * */
+    handleSubmit: PropTypes.func,
+    /**
+     * representation of fetching process
+     *
+     * */
+    isLoading: PropTypes.bool.isRequired,
+    /***
+     *
+     * Edit form must provide data of the Record for updating
+     *
+     */
+    editData: PropTypes.object,
+};
 export default LessonForm;

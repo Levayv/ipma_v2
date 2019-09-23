@@ -61,6 +61,7 @@ class LessonAddForm extends React.Component {
     render() {
         return (
             <LessonForm
+                displayName={"Create"}
                 handleSubmit={this.handleSubmit}
                 isLoading={this.state.loading}
             />

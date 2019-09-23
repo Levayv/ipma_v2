@@ -6,8 +6,6 @@ import {cloneDeep} from "lodash";
 import {readSingleLessonAttempt} from "../../../redux/action";
 import LessonForm from "./components/Form"
 import history from "../../../route/history";
-import LessonTable from "../list/components/LessonTable";
-import Button from "../../common/Button";
 
 class ConnectedLessonEditForm extends React.Component {
     constructor(props) {
@@ -30,7 +28,7 @@ class ConnectedLessonEditForm extends React.Component {
         this.lessonUpdateAttempt = () => {
             const lesson = this.state.lesson;
             axios.put(
-                "http://" + process.env.REACT_APP_BACKEND_IP_PORT + "/api/lesson/"+lesson.id,
+                "http://" + process.env.REACT_APP_BACKEND_IP_PORT + "/api/lesson/" + lesson.id,
                 {
                     name: lesson.name,
                     link: lesson.link,
@@ -48,6 +46,7 @@ class ConnectedLessonEditForm extends React.Component {
                 lessonUpdateSuccessRedirect
                 //todo add popup , use response message
             );
+
             function lessonUpdateSuccessRedirect() {
                 history.push("/lesson/list/");
             }
@@ -62,46 +61,41 @@ class ConnectedLessonEditForm extends React.Component {
             )
         };
     }
+
     componentDidMount() {
-        console.log("EDIT ...");
-        console.log("ID = " + this.props.match.params.recordID);
+        // recordID is provided by Router
         this.props.fetchLesson(this.props.match.params.recordID);
-
-    }
-    componentDidUpdate(prevProps, prevState, snapshot) {
-
     }
 
     render() {
-        let data = cloneDeep(this.props.lesson.data);
-        let error = cloneDeep(this.props.lesson.error);
-        let ready = cloneDeep(! this.props.lesson.loading);
-        let success = (error.length === 0);
-        let giveLessonEditingDataWhenReady = () => {
+        const getLessonDataWhenReady = (lesson) => {
+            let data = cloneDeep(lesson.data);
+            let error = cloneDeep(lesson.error);
+            let ready = cloneDeep(!lesson.loading);
+            let success = ((error.length === 0) && (data !== ""));
             if (ready) {
                 if (success) {
-                    return this.props.lesson.data
-                } else {
-                    return undefined
+                    return data
                 }
-            } else {
-                return undefined
             }
         };
         return (
             <LessonForm
+                displayName={"Update"}
                 handleSubmit={this.handleSubmit}
                 isLoading={this.state.loading}
-                editData={giveLessonEditingDataWhenReady()}
+                editData={getLessonDataWhenReady(this.props.lesson)}
             />
         )
     }
 }
+
 const mapStateToProps = state => {
     return {
         lesson: state.lesson.single,
     };
 };
+
 function mapDispatchToProps(dispatch) {
     return {
         fetchLesson: lesson => dispatch(readSingleLessonAttempt(lesson))
