@@ -4,7 +4,7 @@ import {cloneDeep} from 'lodash';
 
 import LessonTable from "./components/LessonTable"
 import Button from "../../common/Button";
-import {readBulkLessonAttempt} from '../../../redux/action';
+import {readBulkLessonAttempt} from '../../../redux/action/lesson';
 
 class ConnectedLessonList extends React.Component {
     constructor(props) {

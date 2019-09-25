@@ -3,7 +3,7 @@ import axios from "axios";
 import {connect} from "react-redux";
 import {cloneDeep} from "lodash";
 
-import {readSingleLessonAttempt} from "../../../redux/action";
+import {readSingleLessonAttempt} from "../../../redux/action/lesson";
 import LessonForm from "./components/Form"
 import history from "../../../route/history";
 

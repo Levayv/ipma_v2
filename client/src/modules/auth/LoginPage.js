@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import { cloneDeep } from 'lodash';
 
 
-import {loginAttempt,} from '../../redux/action';
+import {loginAttempt} from '../../redux/action/auth';
 
 import LabeledInput from '../common/LabeledInput';
 import Button from '../common/Button';

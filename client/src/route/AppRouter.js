@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 import history from "./history";
-import LoginPage from "../modules/auth";
+import LoginPage from "../modules/auth/LoginPage";
 import LessonAddForm from "../modules/lesson/form/Add";
 import LessonEditForm from "../modules/lesson/form/Edit";
 import LessonList from "../modules/lesson/list/LessonList";

@@ -4,7 +4,7 @@ import {saveTokenToLocalStorage} from "../../api/mapStoreToLocal";
 import {
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
-} from '../action-types';
+} from '../action-types/actionTypes';
 
 /** Token's default value , when user is Unauthorized (type must be string) */
 export const emptyToken = "";
@@ -15,8 +15,11 @@ const initialState = {
         token: emptyToken,
     },
 };
-
-const loginReducer = function (state = initialState, action) {
+/** Combined in rootReducer
+ * name : auth
+ * @see rootReducer
+ * */
+const authReducer = function (state = initialState, action) {
     if (action.type === LOGIN_SUCCESS) {
         const newToken = action.payload.response.data.access_token;
         const newState = cloneDeep(state);

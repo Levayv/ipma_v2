@@ -6,7 +6,7 @@ import {
     READ_BULK_LESSON_REQUEST,
     READ_BULK_LESSON_SUCCESS,
     READ_BULK_LESSON_FAILURE,
-} from '../action-types';
+} from '../action-types/actionTypes';
 
 const initialState = {
     single:{
@@ -21,7 +21,10 @@ const initialState = {
     },
 };
 
-
+/** Combined in rootReducer
+ * name : lesson
+ * @see rootReducer
+ * */
 const lessonReducer = (state = initialState, action) => {
     // --- --- --- Lesson Read Single --- --- --- //
 
