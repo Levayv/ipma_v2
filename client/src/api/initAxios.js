@@ -15,9 +15,10 @@ function initAxiosConfiguration() {
 
 function initAxiosInterceptors() {
     axios.interceptors.request.use(function (request) { // .ts >> AxiosRequestConfig: request
-
-        request.headers['Authorization'] = loadTokenFromLocalStorage();
-
+        const token = loadTokenFromLocalStorage();
+        if (token) {
+            request.headers['Authorization'] = token;
+        }
         return request;
     });
 

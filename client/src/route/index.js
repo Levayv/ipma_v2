@@ -3,7 +3,7 @@ import {
     Router,
     Route,
     Link,
-    // Redirect,
+    Redirect,
 } from "react-router-dom";
 
 import history from "./history";
@@ -11,6 +11,7 @@ import LoginPage from "../modules/auth";
 import LessonAddForm from "../modules/lesson/form/Add";
 import LessonEditForm from "../modules/lesson/form/Edit";
 import LessonList from "../modules/lesson/list/LessonList";
+import {loadTokenFromLocalStorage} from "../api/mapStoreToLocal";
 
 // import LessonDelete from "./modules/lesson/form/LessonDelete";
 
@@ -25,62 +26,88 @@ class AppRouter extends Component {
     render() {
         // todo research and use Refs instead of direct DOM manipulation
         // todo refactor (id for getElementByID) >> (ref)
+
+        const renderAvailableMenus = () => {
+            return (
+                <ul>
+                    <li id={"router-nav-home"} className={"router-nav-item"}>
+                        <Link to="/">HomePage</Link>
+                    </li>
+                    <li id={"router-nav-login"} className={"router-nav-item"}>
+                        <Link to="/auth/login">Login</Link>
+                    </li>
+                    <li id={"router-nav-dashboard"} className={"router-nav-item"}>
+                        <Link to="/Dashboard">Dashboard</Link>
+                    </li>
+                    <li id={"router-nav-list"} className={"router-nav-item"}>
+                        <Link to="/lesson/list">List</Link>
+                    </li>
+                    <li id={"router-nav-form"} className={"router-nav-item"}>
+                        <Link to="/lesson/form">Form</Link>
+                    </li>
+                </ul>
+            )
+        };
         return (
             <Router history={history}>
                 <div className={"router-root"}>
                     <nav className={"router-nav-main"}>
-                        <hr/>
-                        <ul>
-                            <li id={"router-nav-dashboard"}><Link to="/">
-                                Dashboard
-                            </Link></li>
-                            <li id={"router-nav-login"}><Link to="/auth/login">
-                                Login
-                            </Link></li>
-                            <li id={"router-nav-list"}><Link to="/lesson/list">
-                                List
-                            </Link></li>
-                            <li id={"router-nav-form"}><Link to="/lesson/form">
-                                Form
-                            </Link></li>
-                        </ul>
-                        <hr/>
+                        {renderAvailableMenus()}
                     </nav>
 
-                    <Route path="/" exact component={Dashboard}/>
+
+                    <Route path="/" exact component={HomePage}/>
+                    <PrivateRoute path="/dashboard" exact component={Dashboard}/>
                     <Route path="/auth" component={Auth}/>
-                    <Route path="/lesson" component={Lesson}/>
+                    <Route path="/lesson"
+                           component={Lesson}
+                           role={this.state.user}
+                    />
                 </div>
             </Router>
         );
     }
 }
 
-function Dashboard() {
-    return <h2 style={{
-        width: "80%",
-        margin: "auto",
-        textAlign: "center"
-    }}>Dashboard</h2>;
+function HomePage() {
+    return <h1> Welcome to Home Page </h1>;
 }
+
+function Dashboard() {
+    return <h1>Welcome to Dashboard</h1>;
+}
+
 function Auth({match}) {
     return (<div>
         <Route exact path={`${match.path}/login`} component={LoginPage}/>
     </div>)
 }
+
 function Lesson({match}) {
     return (<div>
         <Route exact path={`${match.path}/list/`} component={LessonList}/>
         <Route exact path={`${match.path}/form/`} component={LessonAddForm}/>
         <Route path={`${match.path}/edit/:recordID`} component={LessonEditForm}/>
-        {/*<Route exact path={`${match.path}/edit/`}*/}
-        {/*       render={() => {*/}
-        {/*           alert("Please use edit button inside List of Lessons");*/}
-        {/*           // history.push("/lesson/list")*/}
-        {/*           return (<Redirect to={{pathname: "/lesson/list",}}/>)*/}
-        {/*       }}/>*/}
-        {/*<Route path={`${match.path}/delete/:recordID`} component={LessonDelete}/>*/}
     </div>)
 }
+
+const PrivateRoute = ({component: Component, ...restOfProps}) => {
+    return (
+        <Route
+            {...restOfProps}
+            render={
+                props =>
+                    (loadTokenFromLocalStorage())
+                        ? (<Component {...props}/>)
+                        : (<Redirect to={{
+                            pathname: "/auth/login",
+                            state: {
+                                from: props.location
+                            }
+                        }}/>)
+            }
+        />
+    )
+};
 
 export default AppRouter;
