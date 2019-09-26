@@ -15,7 +15,7 @@ const initialState = {
     session: {
         /** @type boolean*/
         isReady: false,
-        /** @type Array*/
+        /** @type [string] */
         errors: [],
         /** @type string*/
         token: emptyToken,
@@ -44,8 +44,7 @@ const authReducer = function (state = initialState, action) {
         const newState = cloneDeep(state);
         newState.session.token = emptyToken;
         newState.session.isReady = true;
-        newState.session.errors = ["Error #@!?!","Error #@!?!","Error #@!?!"];
-        // newState.session.errors = [action.payload.error.toString()];
+        newState.session.errors = [...action.payload.error.response.data.errors];
         return newState;
     }
     if (action.type === LOGIN_REFRESH) {
