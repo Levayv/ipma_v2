@@ -1,5 +1,11 @@
+/** @see loginRequest */
+export const LOGIN_REQUEST = 'LOGIN_REQUEST';
+/** @see loginSuccess */
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+/** @see loginFailure */
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
+/** @see loginRefresh */
+export const LOGIN_REFRESH = 'LOGIN_REFRESH';
 
 export const READ_SINGLE_LESSON_REQUEST = 'READ_SINGLE_LESSON_REQUEST';
 export const READ_SINGLE_LESSON_SUCCESS = 'READ_SINGLE_LESSON_SUCCESS';
@@ -8,4 +14,3 @@ export const READ_SINGLE_LESSON_FAILURE = 'READ_SINGLE_LESSON_FAILURE';
 export const READ_BULK_LESSON_REQUEST = 'READ_BULK_LESSON_REQUEST';
 export const READ_BULK_LESSON_SUCCESS = 'READ_BULK_LESSON_SUCCESS';
 export const READ_BULK_LESSON_FAILURE = 'READ_BULK_LESSON_FAILURE';
-

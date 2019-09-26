@@ -4,27 +4,38 @@ import {saveTokenToLocalStorage} from "../../api/mapStoreToLocal";
 import {
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
+    LOGIN_REQUEST,
+    LOGIN_REFRESH,
 } from '../action-types/actionTypes';
 
-/** Token's default value , when user is Unauthorized (type must be string) */
+/** @type string Token's default value , when user is Unauthorized */
 export const emptyToken = "";
 const initialState = {
     /** User JWT Authorization token , for Guest token = "unauthorized" */
     session: {
-        isValid: false,
+        /** @type boolean*/
+        isReady: false,
+        /** @type Array*/
+        errors: [],
+        /** @type string*/
         token: emptyToken,
     },
 };
 /** Combined in rootReducer
- * name : auth
  * @see rootReducer
  * */
 const authReducer = function (state = initialState, action) {
+    if (action.type === LOGIN_REQUEST) {
+        const newState = cloneDeep(state);
+        newState.session.isReady = false;
+        newState.session.errors = [];
+        return newState;
+    }
     if (action.type === LOGIN_SUCCESS) {
         const newToken = action.payload.response.data.access_token;
         const newState = cloneDeep(state);
         newState.session.token = newToken;
-        newState.session.isValid = true;
+        newState.session.isReady = true;
         saveTokenToLocalStorage(newToken);
         return newState;
     }
@@ -32,7 +43,14 @@ const authReducer = function (state = initialState, action) {
         saveTokenToLocalStorage(emptyToken);
         const newState = cloneDeep(state);
         newState.session.token = emptyToken;
-        newState.session.isValid = false;
+        newState.session.isReady = true;
+        newState.session.errors = ["Error #@!?!","Error #@!?!","Error #@!?!"];
+        // newState.session.errors = [action.payload.error.toString()];
+        return newState;
+    }
+    if (action.type === LOGIN_REFRESH) {
+        const newState = cloneDeep(state);
+        newState.session.isReady = false;
         return newState;
     }
 

@@ -1,14 +1,19 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import { cloneDeep } from 'lodash';
+import {cloneDeep} from 'lodash';
 
 
-import {loginAttempt} from '../../redux/action/auth';
+import {
+    loginAttempt,
+    loginRefresh,
+} from '../../redux/action/auth';
 
 import LabeledInput from '../common/LabeledInput';
 import Button from '../common/Button';
 import Validator from '../common/Validator'
 import {createRulesFor} from '../common/Validator'
+import VisibleError from "../common/VisibleError";
+import history from "../../route/history";
 
 
 class ConnectedLoginPage extends React.Component {
@@ -17,7 +22,7 @@ class ConnectedLoginPage extends React.Component {
         this.state = {
             /** form control handlers */
             form: {
-                data:{
+                data: {
                     /** user input of corresponding fields */
                     credentials: {
                         //todo STOPSHIP for testing purposes , default values must be empty strings
@@ -40,7 +45,7 @@ class ConnectedLoginPage extends React.Component {
             },
 
         };
-        /** handle user input according field type */
+        /** handle user input according field name */
         this.updateTextInput = (event) => {
             const key = event.target.name;
             const value = event.target.value;
@@ -70,10 +75,30 @@ class ConnectedLoginPage extends React.Component {
         ]);
 
         this.validator = new Validator(rules);
+
+        let out = "Login Page mounted";
+        if(this.props.location.from !== undefined){
+            out+=" , Redirected from " + this.props.location.from.pathname
+        }
+        console.log(out);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(this.state);
+        // console.log("!!! Login page updated")
+        if (this.props.session.isReady) {
+            if (this.props.session.errors.length === 0) {
+                // success
+                // todo add popup remove console.log
+                console.log("Login success , redirecting to dashboard");
+                history.push("/dashboard/")
+            } else {
+                // failed
+                // todo add popup remove console.log
+                console.log("Login failed , showing errors")
+            }
+        } else {
+            // fetch in progress or not even started
+        }
     }
 
     render() {
@@ -85,7 +110,7 @@ class ConnectedLoginPage extends React.Component {
                     displayName={'Login'}
                     placeholder={'YourEmail@mail.xx'}
                     onChange={this.updateTextInput}
-                    value={this.state.form.data.credentials}
+                    data={this.state.form.data.credentials}
                     errors={this.state.form.validation.errors}
                 />
                 <LabeledInput
@@ -93,7 +118,7 @@ class ConnectedLoginPage extends React.Component {
                     displayName={'Password'}
                     placeholder={'1234'}
                     onChange={this.updateTextInput}
-                    value={this.state.form.data.credentials}
+                    data={this.state.form.data.credentials}
                     errors={this.state.form.validation.errors}
                 />
                 <Button
@@ -102,16 +127,30 @@ class ConnectedLoginPage extends React.Component {
                     onClick={this.handleLogin}
                     disabled={!this.state.form.validation.isSubmitEnabled}
                 />
+                <VisibleError
+                    name={this.props.name}
+                    errors={this.props.session.errors}
+                />
             </div>
         );
     }
 }
 
+const mapStateToProps = state => {
+
+    // add selectors...
+
+    return {
+        session: state.auth.session,
+    }
+};
+
 function mapDispatchToProps(dispatch) {
     return {
         loginAttempt: credentials => dispatch(loginAttempt(credentials)),
+        loginRefresh: () => dispatch(loginRefresh()),
     };
 }
 
-const LoginPage = connect(null, mapDispatchToProps)(ConnectedLoginPage);
+const LoginPage = connect(mapStateToProps, mapDispatchToProps)(ConnectedLoginPage);
 export default LoginPage;

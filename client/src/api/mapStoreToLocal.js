@@ -31,7 +31,7 @@ export function loadTokenFromLocalStorage() {
 function validateToken(token) {
     // todo research - add more validation logic , if possible
 
-    if (token !== emptyToken) return false;
+    if (token === emptyToken) return false;
     if (token === "undefined") return false;
     if (token === "null") return false;
     //

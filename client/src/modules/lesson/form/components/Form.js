@@ -106,7 +106,7 @@ class LessonForm extends React.Component {
                     displayName={"Lesson's name"}
                     placeholder={"Lesson 5 Middleware"}
                     onChange={this.updateTextInput}
-                    value={this.state.form.data}
+                    data={this.state.form.data}
                     errors={this.state.form.validation.errors}
                 />
                 <LabeledInput
@@ -114,7 +114,7 @@ class LessonForm extends React.Component {
                     displayName={"Lesson's link"}
                     placeholder={"https://laravel.com/docs/master/middleware"}
                     onChange={this.updateTextInput}
-                    value={this.state.form.data}
+                    data={this.state.form.data}
                     errors={this.state.form.validation.errors}
                 />
                 <LabeledInput
@@ -122,7 +122,7 @@ class LessonForm extends React.Component {
                     displayName={"Lesson's topic"}
                     placeholder={"Laravel"}
                     onChange={this.updateTextInput}
-                    value={this.state.form.data}
+                    data={this.state.form.data}
                     errors={this.state.form.validation.errors}
                 />
                 <Button
