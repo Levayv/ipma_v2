@@ -76,6 +76,7 @@ class ConnectedLoginPage extends React.Component {
 
         this.validator = new Validator(rules);
 
+        // todo add popup remove console.log
         let out = "Login Page mounted";
         if(this.props.location.from !== undefined){
             out+=" , Redirected from " + this.props.location.from.pathname
