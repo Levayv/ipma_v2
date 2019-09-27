@@ -10,6 +10,7 @@ import {
 import history from "./history";
 import LoginPage from "../modules/auth/LoginPage";
 import LessonAddForm from "../modules/lesson/form/Add";
+import Dashboard from "../modules/dashboard/Dashboard";
 import LessonEditForm from "../modules/lesson/form/Edit";
 import LessonList from "../modules/lesson/list/LessonList";
 import {loadTokenFromLocalStorage} from "../api/mapStoreToLocal";
@@ -124,10 +125,6 @@ function RedirectToHomePage() {
 
 function HomePage() {
     return <h1> Welcome to Home Page </h1>;
-}
-
-function Dashboard() {
-    return <h1>Welcome to Dashboard</h1>;
 }
 
 function Auth({match}) {

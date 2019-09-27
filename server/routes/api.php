@@ -21,15 +21,16 @@ use Illuminate\Support\Facades\Route;
 Route::group([
 
 //   middleware api is assigned in AuthController's constructor
-//    'middleware' => 'api',
+    'middleware' => ['api'],
     'prefix' => 'auth'
 
-], function (/*$router*/) {
+], function ($router) {
 
     Route::post('login', 'AuthController@login')->name('login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::get('me', 'AuthController@me');
+    Route::get('temp', 'AuthController@temp');
 
 });
 

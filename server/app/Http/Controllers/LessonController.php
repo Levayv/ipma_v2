@@ -13,7 +13,8 @@ class LessonController extends Controller
     // todo research mutator & accessor
     public function __construct()
     {
-        $this->middleware('CheckLessonAvailability')
+        $this->middleware('authHandle');
+        $this->middleware('checkLessonAvailability')
             ->only(
                 ['show', 'update', 'delete']
             );

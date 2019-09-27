@@ -44,7 +44,18 @@ const authReducer = function (state = initialState, action) {
         const newState = cloneDeep(state);
         newState.session.token = emptyToken;
         newState.session.isReady = true;
-        newState.session.errors = [...action.payload.error.response.data.errors];
+        if (action.payload.error.response.status === 422) {
+            if (action.payload.error.response.data.errors !== undefined) {
+                newState.session.errors = [...action.payload.error.response.data.errors];
+            }
+        }
+        if (action.payload.error.response.status === 500) {
+            newState.session.errors = [
+                "Error 500 - Internal server error",
+                "Please contact system administrator",
+            ];
+        }
+
         return newState;
     }
     if (action.type === LOGIN_REFRESH) {
