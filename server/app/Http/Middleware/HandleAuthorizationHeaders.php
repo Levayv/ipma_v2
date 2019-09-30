@@ -24,35 +24,36 @@ class HandleAuthorizationHeaders extends BaseMiddleware
      */
     public function handle($request, Closure $next)
     {
-//        return $next($request);
+        define("STATUS_CODE", 401);
+        define("STATUS_TEXT", 'fail');
 
         // todo standardize error codes and error structure
         try {
             $this->auth->parseToken()->authenticate(); // returns $user
         } catch (TokenExpiredException $e) {
             return response()->json([
-                'status' => 'fail',
+                'status' => STATUS_TEXT,
                 'title' => 'Token is Expired',
                 'details' => '... You have been idle for too long ...',
-            ],500);
+            ], STATUS_CODE);
         } catch (TokenBlacklistedException $e) {
             return response()->json([
-                'status' => 'fail',
+                'status' => STATUS_TEXT,
                 'title' => 'Token is blacklisted',
                 'details' => '... Token was refreshed , this is old one  ...',
-            ],500);
+            ], STATUS_CODE);
         } catch (TokenInvalidException $e) {
             return response()->json([
-                'status' => 'fail',
+                'status' => STATUS_TEXT,
                 'title' => 'Token is Invalid',
                 'details' => '... Token is not provided by server ...',
-            ],500);
+            ], STATUS_CODE);
         } catch (Exception $e) {
             return response()->json([
-                'status' => 'fail',
+                'status' => STATUS_TEXT,
                 'title' => 'Token is missing',
                 'details' => '... Authorization Token not found in request headers ...',
-            ],500);
+            ], STATUS_CODE);
         }
 
         $response = $next($request);

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {saveTokenToLocalStorage} from "./mapStoreToLocal";
 import {loadTokenFromLocalStorage} from "./mapStoreToLocal";
+import history from "../route/history";
 
 export default function initAxios() {
 
@@ -15,23 +16,41 @@ function initAxiosConfiguration() {
 }
 
 function initAxiosInterceptors() {
-    axios.interceptors.request.use(function (request) { // .ts >> AxiosRequestConfig: request
-        const token = loadTokenFromLocalStorage();
-        if (token) {
-            request.headers.authorization = token;
+    axios.interceptors.request.use(
+        function (request) { // .ts >> AxiosRequestConfig: request
+            const token = loadTokenFromLocalStorage();
+            if (token) {
+                request.headers.authorization = token;
+            }
+
+            // todo STOPSHIP
+            console.log('[Log] Axios Request is ', request);
+
+            return request;
         }
+    );
 
-        console.log('[Log] Axios Request is ', request);
+    axios.interceptors.response.use(
+        response => { // .ts >> AxiosResponse: response
 
-        return request;
-    });
+            saveTokenToLocalStorage(response.headers.authorization);
 
-    axios.interceptors.response.use(function (response) { // .ts >> AxiosResponse: response
+            console.log('[Log] Axios Request is ', response);
 
-        saveTokenToLocalStorage(response.headers.authorization);
+            return response;
+        },
+        error => {
 
-        console.log('[Log] Axios Request is ', response);
+            switch (error.response.status) {
+                case 401:
+                    saveTokenToLocalStorage(undefined);
+                    break;
+                case 403:
+                    break;
+                default:
+                    history.push('/auth/login');
+                    break;
+            }
+        });
 
-        return response;
-    });
 }

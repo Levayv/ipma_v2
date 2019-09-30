@@ -1,8 +1,8 @@
 import emptyToken from '../redux/reducer/authReducer'
 
 /**
- * Sets token to Local Storage, if not undefined
- * @param token {string} Token
+ * Sets token to Local Storage, if undefined deletes existing token
+ * @param token string Token
  * */
 export function saveTokenToLocalStorage(token) {
     if (token !== undefined) {
@@ -22,7 +22,7 @@ export function loadTokenFromLocalStorage() {
         return false;
     }
 
-    return token;
+    return "Bearer " + token;
 }
 
 /**
