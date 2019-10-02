@@ -8,6 +8,9 @@ import {
     LOGIN_REFRESH,
 } from '../action-types/actionTypes';
 
+/** @type string Token's default value , when user is Unauthorized */
+export const emptyToken = "";
+
 const initialState = {
     /** User JWT Authorization token , for Guest token = "unauthorized" */
     session: {

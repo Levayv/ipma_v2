@@ -1,4 +1,4 @@
-import emptyToken from '../redux/reducer/authReducer'
+import {emptyToken} from '../redux/reducer/authReducer'
 
 /**
  * Sets token to Local Storage, if undefined deletes existing token
@@ -7,6 +7,8 @@ import emptyToken from '../redux/reducer/authReducer'
 export function saveTokenToLocalStorage(token) {
     if (token !== undefined) {
         localStorage.setItem("token", token);
+    }else{
+        localStorage.setItem("token", emptyToken);
     }
 }
 

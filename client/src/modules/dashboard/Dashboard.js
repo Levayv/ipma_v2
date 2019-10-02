@@ -2,6 +2,10 @@ import React from "react";
 import axios from "axios";
 import {cloneDeep} from "lodash";
 
+import Button from "../common/Button";
+import history from "../../route/history";
+import {saveTokenToLocalStorage} from "../../api/mapStoreToLocal";
+
 class Dashboard extends React.Component {
     constructor(props) {
         super(props);
@@ -29,6 +33,10 @@ class Dashboard extends React.Component {
                 //todo add staff
             }
         };
+        this.handleLogOut = () => {
+            saveTokenToLocalStorage(undefined);
+            history.push('/home');
+        };
     }
 
     componentDidMount() {
@@ -47,7 +55,20 @@ class Dashboard extends React.Component {
             } else
                 return ("");
         };
-        return <h1> {renderGreetings()} </h1>;
+        const renderLogOutButton = () => {
+            if (this.state.user.name) {
+                return ( <Button
+                    name={'logout'}
+                    displayName={'Sign-Out'}
+                    onClick={this.handleLogOut}
+                />);
+            } else
+                return ("");
+        };
+        return <div>
+            <div> {renderLogOutButton()}</div>
+            <h1> {renderGreetings()} </h1>
+        </div>;
     }
 }
 
