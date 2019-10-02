@@ -26,12 +26,14 @@ class LessonItem extends React.Component {
             );
         };
         this.deleteSuccess = (response) => {
+            //todo change to popup
             console.log("delete success");
             console.log(response);
             this.setState({deletionInProgress: false});
             this.props.refresh();
         };
         this.deleteFailure = (error) => {
+            //todo change to popup
             console.log("delete failed");
             console.log(error);
             this.setState({deleting: false});

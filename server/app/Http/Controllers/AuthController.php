@@ -2,11 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Str;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use Tymon\JWTAuth\Exceptions\TokenInvalidException;
-
 class AuthController extends Controller
 {
     /**
@@ -30,7 +25,14 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['errors' => ['Invalid Credentials', 'Wrong Email and/or Password']], 401);
+            return response()->json([
+                'errors' => [
+                    'Invalid Credentials',
+                    'Wrong Email and/or Password',
+                ],
+                'isLoginSuccessful' => false,
+            ],
+                200);
         }
 
         return $this->respondWithToken($token);
@@ -88,57 +90,17 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ],
-            200
-//            ,
-//            ["Authorization" => "$token"]
-        );
-    }
-
-    public function getAuthenticatedUser()
-    {
-        try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['user_not_found'], 404);
-            }
-        } catch (TokenExpiredException $e) {
-            return response()->json(['token_expired'], $e->getStatusCode());
-        } catch (TokenInvalidException $e) {
-            return response()->json(['token_invalid'], $e->getStatusCode());
-        } catch (JWTException $e) {
-            return response()->json(['token_absent'], $e->getStatusCode());
-        }
-        return response()->json(compact('user'));
-    }
-
-
-    /**
-     * @return string|null
-     */
-    public
-    static function getAuthBearerToken($request)
-    {
-        $authHeader = null;
-        $authHeaderBuffer = $request->header('Authorization', '');
-        if (Str::startsWith($authHeaderBuffer, 'Bearer ')) {
-            $authHeader = Str::substr($authHeaderBuffer, 7);
-        }
-        return $authHeader;
-    }
-
-    public
-    static function setAuthBearerToken($response)
-    {
-
-    }
-
-    public
-    static function getRefreshedToken()
-    {
-        return auth()->refresh();
+        $response = response();
+        return $response
+            ->json(
+                [
+                    'isLoginSuccessful' => true,
+                    'access_token' => "look in the header dude",
+                    'token_type' => 'bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60
+                ], 200)
+            ->header(
+                'Authorization', $token
+            );
     }
 }

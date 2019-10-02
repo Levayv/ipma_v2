@@ -1,15 +1,13 @@
 import {cloneDeep} from "lodash";
 
-import {saveTokenToLocalStorage} from "../../api/mapStoreToLocal";
 import {
+    LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
-    LOGIN_REQUEST,
+    LOGIN_ERROR,
     LOGIN_REFRESH,
 } from '../action-types/actionTypes';
 
-/** @type string Token's default value , when user is Unauthorized */
-export const emptyToken = "";
 const initialState = {
     /** User JWT Authorization token , for Guest token = "unauthorized" */
     session: {
@@ -17,8 +15,6 @@ const initialState = {
         isReady: false,
         /** @type [string] */
         errors: [],
-        /** @type string*/
-        token: emptyToken,
     },
 };
 /** Combined in rootReducer
@@ -32,30 +28,26 @@ const authReducer = function (state = initialState, action) {
         return newState;
     }
     if (action.type === LOGIN_SUCCESS) {
-        const newToken = action.payload.response.data.access_token;
+        /** When action.payload.response.data.loginSuccess === true
+         * @see loginSuccess() function call */
+
         const newState = cloneDeep(state);
-        newState.session.token = newToken;
         newState.session.isReady = true;
-        saveTokenToLocalStorage(newToken);
+        newState.session.errors = [];
         return newState;
     }
     if (action.type === LOGIN_FAILURE) {
-        saveTokenToLocalStorage(emptyToken);
-        const newState = cloneDeep(state);
-        newState.session.token = emptyToken;
-        newState.session.isReady = true;
-        if (action.payload.error.response.status === 422) {
-            if (action.payload.error.response.data.errors !== undefined) {
-                newState.session.errors = [...action.payload.error.response.data.errors];
-            }
-        }
-        if (action.payload.error.response.status === 500) {
-            newState.session.errors = [
-                "Error 500 - Internal server error",
-                "Please contact system administrator",
-            ];
-        }
+        /** When action.payload.response.data.loginSuccess === false
+         * @see loginSuccess() function call */
 
+        const newState = cloneDeep(state);
+        newState.session.isReady = true;
+        newState.session.errors = [...action.payload.response.data.errors];
+        return newState;
+    }
+    if (action.type === LOGIN_ERROR) {
+        const newState = cloneDeep(state);
+        newState.session.isReady = true;
         return newState;
     }
     if (action.type === LOGIN_REFRESH) {

@@ -5,7 +5,6 @@ import {cloneDeep} from 'lodash';
 
 import {
     loginAttempt,
-    loginRefresh,
 } from '../../redux/action/auth';
 
 import LabeledInput from '../common/LabeledInput';
@@ -85,7 +84,6 @@ class ConnectedLoginPage extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        // console.log("!!! Login page updated")
         if (this.props.session.isReady) {
             if (this.props.session.errors.length === 0) {
                 // success
@@ -149,7 +147,6 @@ const mapStateToProps = state => {
 function mapDispatchToProps(dispatch) {
     return {
         loginAttempt: credentials => dispatch(loginAttempt(credentials)),
-        loginRefresh: () => dispatch(loginRefresh()),
     };
 }
 

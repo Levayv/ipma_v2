@@ -34,6 +34,8 @@ function validateToken(token) {
     if (token === emptyToken) return false;
     if (token === "undefined") return false;
     if (token === "null") return false;
+    if (token === null) return false;
+    if (token === undefined) return false;
     //
     return true;
 }
