@@ -17,7 +17,10 @@ import {loadTokenFromLocalStorage} from "../api/mapStoreToLocal";
 
 import initialize from "../config/init";
 
+
 class AppRouter extends Component {
+    // todo extract links and routes by layout
+    //  * research bootstrap
     constructor(props) {
         super(props);
         initialize();
