@@ -57,11 +57,14 @@ class Dashboard extends React.Component {
         };
         const renderLogOutButton = () => {
             if (this.state.user.name) {
-                return ( <Button
-                    name={'logout'}
-                    displayName={'Sign-Out'}
-                    onClick={this.handleLogOut}
-                />);
+                return (
+                    <Button
+                        displayName={'Sign-Out'}
+                        onClick={this.handleLogOut}
+
+                        variant={"primary"}
+                    />
+                );
             } else
                 return ("");
         };

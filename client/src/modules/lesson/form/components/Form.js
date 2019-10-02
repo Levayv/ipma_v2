@@ -129,6 +129,7 @@ class LessonForm extends React.Component {
                     displayName={getButtonDisplayName(this.props.displayName)}
                     onClick={this.handleSubmit}
                     disabled={!this.state.form.validation.isSubmitEnabled || this.props.isLoading}
+                    variant={"success"}
                 />
             </div>
         )

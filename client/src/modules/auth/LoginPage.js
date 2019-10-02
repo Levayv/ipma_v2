@@ -121,10 +121,11 @@ class ConnectedLoginPage extends React.Component {
                     errors={this.state.form.validation.errors}
                 />
                 <Button
-                    name={'submit'}
                     displayName={'Sign-in'}
                     onClick={this.handleLogin}
                     disabled={!this.state.form.validation.isSubmitEnabled}
+
+                    variant={"primary"}
                 />
                 <VisibleError
                     name={this.props.name}

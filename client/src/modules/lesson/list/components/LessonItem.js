@@ -56,18 +56,20 @@ class LessonItem extends React.Component {
                 </td>
                 <td>
                     <Button
-                        name={"edit"}
                         displayName={"Edit"}
-                        extraClassName={"datum"}
                         recordID={lesson.id}
                         onClick={this.handleEdit}
+
+                        variant={"warning"}
+                        size={"sm"}
                     />
                     <Button
-                        name={"delete"}
                         displayName={"Delete"}
-                        extraClassName={"datum"}
                         recordID={lesson.id}
                         onClick={this.handleDelete}
+
+                        variant={"danger"}
+                        size={"sm"}
                     />
                 </td>
             </tr>
