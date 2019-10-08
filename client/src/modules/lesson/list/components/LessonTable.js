@@ -1,7 +1,8 @@
 import React from "react";
 import LessonItem from "./LessonItem.js";
 
-// import './LessonTable.css'
+import {Table as TableBtr} from 'react-bootstrap';
+
 
 class LessonTable extends React.Component {
     constructor(props) {
@@ -30,9 +31,9 @@ class LessonTable extends React.Component {
         } else {
             tableBody = <tr><td> Nothing to show </td></tr>;
         }
-
+            //todo add refresh button instead of <th>{this.colName.id}</th>
         return (
-            <table>
+            <TableBtr striped bordered hover size={'sm'} responsive={'md'}>
                 <thead>
                 <tr>
                     <th>{this.colName.id}</th>
@@ -44,7 +45,7 @@ class LessonTable extends React.Component {
                 <tbody>
                 {tableBody}
                 </tbody>
-            </table>
+            </TableBtr>
         )
     }
 }

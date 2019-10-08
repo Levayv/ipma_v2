@@ -31,7 +31,7 @@ class LessonAddForm extends React.Component {
                     link: lesson.link,
                     topic_id: lesson.topic,
                 }
-            ).then(response => this.lessonCreateFailure(response)
+            ).then(response => this.lessonCreateSuccess(response)
             ).catch(error => this.lessonCreateFailure(error),
             );
         };

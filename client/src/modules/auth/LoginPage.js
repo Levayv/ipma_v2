@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {cloneDeep} from 'lodash';
-
+import Form from 'react-bootstrap/Form';
 
 import {
     loginAttempt,
@@ -11,7 +11,6 @@ import LabeledInput from '../common/LabeledInput';
 import Button from '../common/Button';
 import Validator from '../common/Validator'
 import {createRulesFor} from '../common/Validator'
-import VisibleError from "../common/VisibleError";
 import history from "../../route/history";
 
 
@@ -41,6 +40,10 @@ class ConnectedLoginPage extends React.Component {
                         isSubmitEnabled: [],
                     }
                 },
+                touched: {
+                    login: false,
+                    password: false,
+                }
             },
 
         };
@@ -53,6 +56,7 @@ class ConnectedLoginPage extends React.Component {
             currentState.form.data.credentials[key] = value;
             currentState.form.validation = this.validator.process({[key]: value}, currentState.form.validation);
             currentState.form.validation.isSubmitEnabled = this.updateButton(currentState.form.validation);
+            currentState.form.touched[key] = true;
 
             this.setState(currentState);
         };
@@ -102,8 +106,7 @@ class ConnectedLoginPage extends React.Component {
 
     render() {
         return (
-            <div>
-                <h1>Login</h1>
+            <Form>
                 <LabeledInput
                     name={'login'}
                     displayName={'Login'}
@@ -111,6 +114,7 @@ class ConnectedLoginPage extends React.Component {
                     onChange={this.updateTextInput}
                     data={this.state.form.data.credentials}
                     errors={this.state.form.validation.errors}
+                    touched={this.state.form.touched}
                 />
                 <LabeledInput
                     name={'password'}
@@ -119,6 +123,7 @@ class ConnectedLoginPage extends React.Component {
                     onChange={this.updateTextInput}
                     data={this.state.form.data.credentials}
                     errors={this.state.form.validation.errors}
+                    touched={this.state.form.touched}
                 />
                 <Button
                     displayName={'Sign-in'}
@@ -127,18 +132,14 @@ class ConnectedLoginPage extends React.Component {
 
                     variant={"primary"}
                 />
-                <VisibleError
-                    name={this.props.name}
-                    errors={this.props.session.errors}
-                />
-            </div>
+            </Form>
         );
     }
 }
 
 const mapStateToProps = state => {
 
-    // add selectors...
+    // todo add selectors...
 
     return {
         session: state.auth.session,

@@ -1,14 +1,17 @@
 import React from 'react';
+import Form from "react-bootstrap/Form";
 
 class Input extends React.Component {
     render() {
         return (
-            <input
+            <Form.Control
                 name={this.props.name}
-                className={'common-input'}
                 value={this.props.value}
                 onChange={this.props.onChange}
                 placeholder={this.props.placeholder}
+                type="text"
+                isValid={this.props.isValid}
+                isInvalid={this.props.isInvalid}
             />
         );
     }

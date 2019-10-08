@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 import PropTypes from 'prop-types';
-import {cloneDeep} from "lodash";
+import {cloneDeep} from 'lodash';
 
-import LabeledInput from "../../../common/LabeledInput";
-import Button from "../../../common/Button";
-import Validator, {createRulesFor} from "../../../common/Validator";
+import LabeledInput from '../../../common/LabeledInput';
+import Button from '../../../common/Button';
+import Validator, {createRulesFor} from '../../../common/Validator';
 
 class LessonForm extends React.Component {
     constructor(props) {
@@ -30,6 +30,11 @@ class LessonForm extends React.Component {
                         isSubmitEnabled: [],
                     }
                 },
+                touched: {
+                    name: false,
+                    link: false,
+                    topic: false,
+                }
             },
         };
 
@@ -46,6 +51,7 @@ class LessonForm extends React.Component {
                 cloneDeep(currentState.form.validation)
             );
             currentState.form.validation.isSubmitEnabled = this.updateButton(currentState.form.validation);
+            currentState.form.touched[key] = true;
 
             this.setState(cloneDeep(currentState));
         };
@@ -82,6 +88,10 @@ class LessonForm extends React.Component {
                 newState.form.validation.topic = true;
                 newState.form.validation.isSubmitEnabled = true;
 
+                newState.form.touched.name = true;
+                newState.form.touched.link = true;
+                newState.form.touched.topic = true;
+
                 this.updateButton(newState.form.validation);
                 this.setState(newState);
             }
@@ -102,20 +112,22 @@ class LessonForm extends React.Component {
             <div>
                 <h1>{getHeaderDisplayName(this.props.displayName)}</h1>
                 <LabeledInput
-                    name={"name"}
+                    name={'name'}
                     displayName={"Lesson's name"}
                     placeholder={"Lesson 5 Middleware"}
                     onChange={this.updateTextInput}
                     data={this.state.form.data}
                     errors={this.state.form.validation.errors}
+                    touched={this.state.form.touched}
                 />
                 <LabeledInput
-                    name={"link"}
+                    name={'link'}
                     displayName={"Lesson's link"}
                     placeholder={"https://laravel.com/docs/master/middleware"}
                     onChange={this.updateTextInput}
                     data={this.state.form.data}
                     errors={this.state.form.validation.errors}
+                    touched={this.state.form.touched}
                 />
                 <LabeledInput
                     name={'topic'}
@@ -124,12 +136,13 @@ class LessonForm extends React.Component {
                     onChange={this.updateTextInput}
                     data={this.state.form.data}
                     errors={this.state.form.validation.errors}
+                    touched={this.state.form.touched}
                 />
                 <Button
                     displayName={getButtonDisplayName(this.props.displayName)}
                     onClick={this.handleSubmit}
                     disabled={!this.state.form.validation.isSubmitEnabled || this.props.isLoading}
-                    variant={"success"}
+                    variant={'success'}
                 />
             </div>
         )

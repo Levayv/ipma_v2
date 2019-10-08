@@ -1,23 +1,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Form from "react-bootstrap/Form";
 
 import Input from './Input'
 import Label from './Label'
-import VisibleError from "./VisibleError";
 
 /**
  * Combined Label, Input and Possible Errors
  * */
 class LabeledInput extends React.Component {
     render() {
-        const getErrors = () => {
-            if (this.props.errors)
-                return this.props.errors[this.props.name];
-            else
-                return []
+        /** One dimensional array of type string extracted Errors from ErrorBag */
+        const errors = (this.props.errors)
+            ? (this.props.errors[this.props.name])
+            : ([]);
+        /** Returns ul of errors if any */
+        const renderErrors = (errors) => {
+            //todo implement debounce
+            if (errors.length > 0) {
+                const errorList = errors.map((error, index) =>
+                    <li key={index}>
+                        {error}
+                    </li>
+                );
+                return (
+                    <ul>
+                        {errorList}
+                    </ul>)
+            }
+        };
+        const renderSuccess = () => {
+            // todo remove if unnecessary
+            return "OK ✓";
         };
         return (
-            <span className={"common-labeled-input"} id={"label-" + this.props.name}>
+            <Form.Group>
                 <Label
                     displayName={this.props.displayName}
                 />
@@ -26,11 +43,17 @@ class LabeledInput extends React.Component {
                     value={this.props.data[this.props.name]}
                     placeholder={this.props.placeholder}
                     onChange={this.props.onChange}
+                    type="text"
+                    isValid={this.props.touched[this.props.name] && (errors.length === 0)}
+                    isInvalid={this.props.touched[this.props.name] && (errors.length > 0)}
                 />
-                <VisibleError
-                    errors={getErrors()}
-                />
-            </span>
+                <Form.Control.Feedback type="valid">
+                    {renderSuccess()}
+                </Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                    {renderErrors(errors)}
+                </Form.Control.Feedback>
+            </Form.Group>
         );
     }
 }
@@ -63,12 +86,19 @@ LabeledInput.propTypes = {
      * */
     data: PropTypes.object.isRequired,
     /**
-     * ErrorBag gor Rendering Validation errors if any [OPTIONAL]
+     * ErrorBag for Rendering Validation errors if any [OPTIONAL]
      * String Array extracted from errors using this.props.name
      * @see LabeledInput.propTypes.name
      * @type object
      * */
     errors: PropTypes.object,
+    /**
+     * ToucheBag , If user ever touched UI element returns true , false otherwise
+     * Boolean value is extracted from touched using this.props.name
+     * @type boolean
+     * */
+    touched: PropTypes.object.isRequired,
+
 };
 
 export default LabeledInput;

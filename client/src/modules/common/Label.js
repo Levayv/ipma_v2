@@ -1,11 +1,12 @@
 import React from 'react';
+import Form from "react-bootstrap/Form";
 
 class Label extends React.Component {
     render() {
         return (
-            <label className={"common-label"}>
+            <Form.Label>
                 {this.props.displayName}
-            </label>
+            </Form.Label>
         );
     }
 }
