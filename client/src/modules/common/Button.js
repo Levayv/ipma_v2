@@ -7,6 +7,7 @@ class Button extends React.Component {
     render() {
         return (
             <ButtonUI
+                className={this.props.className}
                 name={this.props.name}
                 onClick={this.props.onClick}
                 disabled={this.props.disabled}
@@ -22,6 +23,10 @@ class Button extends React.Component {
 
 Button.propTypes = {
     //todo remove name attribute if still useless
+    /**
+     * @type string
+     */
+    className: PropTypes.string,
     /**
      * Unique identifier
      * @type string

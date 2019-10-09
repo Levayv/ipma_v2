@@ -46,11 +46,12 @@ class ConnectedLessonList extends React.Component {
         let showRefreshButton = () => {
             return (
                 <Button
+                    className={'refresh-button'}
                     displayName={"↻"}
                     onClick={this.refresh}
 
-                    variant={"secondary"}
-                    size={"sm"}
+                    variant={'secondary'}
+                    size={'sm'}
                 />
             )
         };

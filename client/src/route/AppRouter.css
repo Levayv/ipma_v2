@@ -1,0 +1,156 @@
+/*:root {*/
+/*    --pallete-white: #48a0e3;*/
+/*    --pallete-light: #5b75c1;*/
+/*    --pallete-dark: #2429b4;*/
+/*    --pallete-black: #13059b;*/
+/*}*/
+
+:root {
+    --pallete-white: #bbab9b;
+    --pallete-light: #d4ac6e;
+    --pallete-dark: #8b6f47;
+    --pallete-black: #4f3222;
+}
+
+/*:root {*/
+/*    --pallete-white: #31D843;*/
+/*    --pallete-light: #7CB518;*/
+/*    --pallete-dark: #5C8001;*/
+/*    --pallete-black: #293F14;*/
+/*}*/
+
+body {
+    background-image: linear-gradient(270deg, var(--pallete-white) 0%, var(--pallete-light) 10%, var(--pallete-white) 100%);
+}
+
+a {
+    color: var(--pallete-black); /* blue colors for links too */
+    text-decoration: none; /* no underline */
+}
+
+.main-header, .main-footer {
+    background-color: var(--pallete-black);
+    color: var(--pallete-white);
+}
+
+.main-header {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.main-footer {
+    font-size: 15px;
+    font-weight: normal;
+    margin-top: 50px;
+}
+
+
+.aside-body a {
+    display: block;
+}
+
+.router-nav-menu {
+    background-color: inherit;
+}
+
+.navbar-nav {
+    background-color: var(--pallete-light);
+}
+
+.nav-link:hover {
+    background-color: var(--pallete-dark);
+}
+
+.dropdown-menu {
+    background-color: var(--pallete-light);
+}
+
+.router-nav-link-selected {
+    background-color: var(--pallete-light);
+}
+
+.dropdown-item:hover {
+    background-color: var(--pallete-white);
+}
+
+/*********************************************************************************************/
+.btn-primary {;
+    background-image: linear-gradient(180deg, rgb(0, 123, 255) 10%, rgb(0, 111, 230) 84.8%);
+}
+
+.btn-secondary {;
+    background-image: linear-gradient(180deg, rgb(90, 98, 104) 10%, rgb(81, 88, 94) 84.8%);
+}
+
+.btn-success {;
+    background-image: linear-gradient(180deg, rgb(33, 136, 56) 10%, rgb(30, 122, 50) 84.8%);
+}
+
+.btn-warning {;
+    background-image: linear-gradient(180deg, rgb(255, 193, 7) 10%, rgb(230, 174, 6) 84.8%);
+}
+
+.btn-danger {;
+    background-image: linear-gradient(180deg, rgb(210, 36, 52) 10%, rgb(189, 32, 47) 84.8%);
+}
+
+.btn-info {;
+    background-image: linear-gradient(180deg, rgb(19, 132, 150) 10%, rgb(17, 119, 135) 84.8%);
+}
+
+
+.btn-primary:hover {;
+    background-image: linear-gradient(180deg, rgb(0, 111, 230) 10%, rgb(0, 100, 207) 84.8%);
+}
+
+.btn-secondary:hover {;
+    background-image: linear-gradient(180deg, rgb(81, 88, 94) 10%, rgb(73, 79, 84) 84.8%);
+}
+
+.btn-success:hover {;
+    background-image: linear-gradient(180deg, rgb(30, 122, 50) 10%, rgb(27, 110, 45) 84.8%);
+}
+
+.btn-warning:hover {;
+    background-image: linear-gradient(180deg, rgb(230, 174, 6) 10%, rgb(207, 156, 6) 84.8%);
+}
+
+.btn-danger:hover {;
+    background-image: linear-gradient(180deg, rgb(189, 32, 47) 10%, rgb(170, 29, 42) 84.8%);
+}
+
+.btn-info:hover {;
+    background-image: linear-gradient(180deg, rgb(17, 119, 135) 10%, rgb(15, 107, 122) 84.8%);
+}
+
+.btn-primary:active {
+    background-image: linear-gradient(180deg, rgb(0, 100, 207) 10%, rgb(0, 90, 186) 84.8%);
+}
+
+.btn-secondary:active {
+    background-image: linear-gradient(180deg, rgb(73, 79, 84) 10%, rgb(66, 71, 76) 84.8%);
+}
+
+.btn-success:active {
+    background-image: linear-gradient(180deg, rgb(27, 110, 45) 10%, rgb(24, 99, 41) 84.8%);
+}
+
+.btn-warning:active {
+    background-image: linear-gradient(180deg, rgb(207, 156, 6) 10%, rgb(186, 141, 5) 84.8%);
+}
+
+.btn-danger:active {
+    background-image: linear-gradient(180deg, rgb(170, 29, 42) 10%, rgb(153, 26, 38) 84.8%);
+}
+
+.btn-info:active {
+    background-image: linear-gradient(180deg, rgb(15, 107, 122) 10%, rgb(14, 96, 109) 84.8%);
+}
+
+/*********************************************************************************************/
+
+.refresh-button {
+    position: relative;
+    top: 32px;
+}
