@@ -2,9 +2,11 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Lesson;
+use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Gate;
 
 class LessonPolicy
 {
@@ -13,84 +15,83 @@ class LessonPolicy
     /**
      * Determine whether the user can view any lessons.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function index(User $user)
     {
-        //
+        return true;
     }
 
     /**
      * Determine whether the user can view the lesson.
      *
-     * @param  \App\User  $user
-     * @param  \App\Lesson  $lesson
+     * @param User $user
+     * @param Lesson $lesson
      * @return mixed
      */
-    public function view(User $user, Lesson $lesson)
+    public function show(User $user, Lesson $lesson)
     {
-        //
+        return true;
     }
 
     /**
      * Determine whether the user can create lessons.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @return mixed
      */
     public function create(User $user)
     {
-        //
+        return true;
     }
 
     /**
      * Determine whether the user can update the lesson.
      *
-     * @param  \App\User  $user
-     * @param  \App\Lesson  $lesson
-     * @return mixed
+     * @param User $user
+     * @param Lesson $lesson
+     * @return boolean
+     * @throws AuthorizationException
+     * @see allowOnlyOwner
      */
     public function update(User $user, Lesson $lesson)
     {
-        $hasAccess = $user->id === $lesson->user_id;
-        return $hasAccess;
+        return $this->allowOnlyOwner($user, $lesson);
     }
 
     /**
      * Determine whether the user can delete the lesson.
      *
-     * @param  \App\User  $user
-     * @param  \App\Lesson  $lesson
-     * @return mixed
+     * @param User $user
+     * @param Lesson $lesson
+     * @return boolean
+     * @throws AuthorizationException
+     * @see allowOnlyOwner
      */
     public function delete(User $user, Lesson $lesson)
     {
-        $hasAccess = $user->id === $lesson->user_id;
-        return $hasAccess;
+        return $this->allowOnlyOwner($user, $lesson);
     }
-
     /**
-     * Determine whether the user can restore the lesson.
+     * Returns true if resource was owned/created by the user false otherwise
      *
-     * @param  \App\User  $user
-     * @param  \App\Lesson  $lesson
-     * @return mixed
+     * @param User $user
+     * @param Lesson $lesson
+     * @return boolean
+     * @throws AuthorizationException
      */
-    public function restore(User $user, Lesson $lesson)
+    private function allowOnlyOwner(User $user, Lesson $lesson)
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the lesson.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Lesson  $lesson
-     * @return mixed
-     */
-    public function forceDelete(User $user, Lesson $lesson)
-    {
-        //
+        if (Gate::allows('supervise')) {
+            return true;
+        } else {
+            // check ownership of created lesson
+            if ($user->id === $lesson->user_id){
+                return true;
+            }else{
+                $this->deny("This Lesson is not created by you, leave it alone. Please and thank you.");
+            }
+        }
     }
 }

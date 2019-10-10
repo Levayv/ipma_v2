@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 class LessonController extends Controller
@@ -86,9 +87,17 @@ class LessonController extends Controller
      *
      * @param Request $request
      * @return Response
+     * @throws AuthorizationException
      */
     public function store(Request $request)
     {
+        $this->authorize('create' , Lesson::class);
+        if (Gate::denies('create_lesson')){
+            return response()->json([
+                'message' => '"you can\'t create lesson"'
+            ],403);
+        }
+
         $validator = Validator::make($request->all(), $this->requiredFieldSet);
         if ($validator->fails()) {
             return response()->json(
@@ -115,10 +124,18 @@ class LessonController extends Controller
      * Display a listing of the resource.
      *
      * @return Response
+     * @throws AuthorizationException
      */
     public function index()
     {
         //todo research pagination
+
+        $this->authorize('index' , Lesson::class);
+        if (Gate::denies('read_lesson')){
+            return response()->json([
+                'message' => '"you can\'t read lesson"'
+            ],403);
+        }
 
         $lessonList = Lesson::query()
             ->orderByDesc('updated_at')
@@ -132,10 +149,20 @@ class LessonController extends Controller
      *
      * @param int $id
      * @return Response
+     * @throws AuthorizationException
      */
     public function show(int $id)
     {
         $lesson = Lesson::query()->find($id);
+
+        $this->authorize('show', $lesson);
+        Gate::denies('read_lesson', $lesson);
+        if (Gate::denies('read_lesson' , $lesson)){
+            return response()->json([
+                'message' => '"you can\'t read lesson"'
+            ],403);
+        }
+
         return response()->json($lesson);
     }
 
@@ -158,14 +185,10 @@ class LessonController extends Controller
 
         $lesson = Lesson::query()->find($id);
 
-        try {
-            $this->authorize('update', $lesson);
-        } catch (AuthorizationException $e) {
-            //todo optimise , upgrade getJsonFail
+        $this->authorize('update', $lesson);
+        if (Gate::denies('update_lesson' , $lesson)){
             return response()->json([
-                'status' => 'fail',
-                'title' => 'forbidden',
-                'error' => 'you are not a owner of this lesson',
+                'message' => '"you can\'t update lesson"'
             ],403);
         }
 
@@ -188,14 +211,10 @@ class LessonController extends Controller
     {
         $lesson = Lesson::query()->find($id);
 
-        try {
-            $this->authorize('delete', $lesson);
-        } catch (AuthorizationException $e) {
-            //todo optimise , upgrade getJsonFail
+        $this->authorize('delete' , $lesson);
+        if (Gate::denies('delete_lesson' , $lesson)){
             return response()->json([
-                'status' => 'fail',
-                'title' => 'forbidden',
-                'error' => 'you are not a owner of this lesson',
+                'message' => '"you can\'t delete lesson"'
             ],403);
         }
 

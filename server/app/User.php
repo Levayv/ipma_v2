@@ -3,8 +3,8 @@
 namespace App;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -60,7 +60,49 @@ class User extends Authenticatable implements JWTSubject
     {
         // todo : add role
         return [
-            'role'=>"hardcoded-role-test"
+            'role' => $this->getRole()
         ];
+    }
+
+    /**
+     * ???
+     *
+     * @return array Permission Names of Current user
+     */
+    public function getPermissions()
+    {
+        $roleID = $this->role_id;
+        $permissionToRoleCollection = DB::table('permission_to_role')
+            ->where('role_id', '=', $roleID)
+            ->orderBy('id')
+            ->get('permission_id');
+
+        // todo refactor using pluck();
+        $permissionIDs = [];
+        foreach ($permissionToRoleCollection as $permissionToRole) {
+            array_push($permissionIDs, $permissionToRole->permission_id);
+        }
+
+        $permissionCollection = DB::table('permissions')
+            ->whereIn('id', $permissionIDs)
+            ->orderBy('id')
+            ->get('name');
+
+        // todo refactor using pluck();
+        $permissionNames = [];
+        foreach ($permissionCollection as $permission) {
+            array_push($permissionNames, $permission->name);
+        }
+        return $permissionNames;
+    }
+
+    public function getRole()
+    {
+        $roleID = $this->role_id;
+        $roleName = DB::table('roles')
+            ->where('id', '=', $roleID)
+            ->get('name')[0]
+            ->name;
+        return $roleName;
     }
 }
