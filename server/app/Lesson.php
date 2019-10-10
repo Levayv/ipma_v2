@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property integer user_id magic
+ */
 class Lesson extends Model
 {
     /**

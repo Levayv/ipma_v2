@@ -12,15 +12,24 @@ class LessonItem extends React.Component {
             history.push("/lesson/edit/" + this.props.lesson.id);
         };
         this.handleDelete = () => {
-            this.deleteAttempt(this.props.lesson.id);
+            this.setState(
+                {
+                    lesson: this.props.lesson,
+                    deletionInProgress: true,
+                },
+                // callback after state update
+                this.lessonDeleteAttempt
+            );
+
+            // this.lessonDeleteAttempt(this.props.lesson.id);
 
             // Redirecting to Delete form //todo change to popup
             // history.push("/lesson/delete/"+recordID)
         };
-        this.deleteAttempt = (id) => {
-            this.setState({deletionInProgress: true});
+        this.lessonDeleteAttempt = () => {
+            const lesson = this.state.lesson;
             axios.delete(
-                "http://" + process.env.REACT_APP_BACKEND_IP_PORT + "/api/lesson/" + id
+                "http://" + process.env.REACT_APP_BACKEND_IP_PORT + "/api/lesson/" + lesson.id
             ).then(response => this.deleteSuccess(response)
             ).catch(error => this.deleteFailure(error)
             );
@@ -29,15 +38,20 @@ class LessonItem extends React.Component {
             //todo change to popup
             console.log("delete success");
             console.log(response);
-            this.setState({deletionInProgress: false});
-            this.props.refresh();
+            this.setState(
+                {
+                    deletionInProgress: false
+                },
+                this.props.refresh
+            );
         };
         this.deleteFailure = (error) => {
             //todo change to popup
             console.log("delete failed");
             console.log(error);
-            this.setState({deleting: false});
-
+            this.setState(
+                {deleting: false}
+                );
         };
     }
 

@@ -55,9 +55,15 @@ function initAxiosInterceptors() {
                     switch (error.response.status) {
                         case 401:
                             //todo add popup
+                            console.log("Error 401 Un-Auth");
                             redirectWithPurge('/auth/login');
                             break;
                         case 403:
+                            //todo add popup
+                            console.log("Error 403 Forbidden");
+                            console.log(error.response.data.message);
+                            console.log(error.response.data.error);
+                            redirectOnly('/dashboard', error.response.headers.authorization);
                             break;
                         case 500:
                             //todo add popup
@@ -88,6 +94,12 @@ function initAxiosInterceptors() {
  * */
 function redirectWithPurge(pathname) {
     saveTokenToLocalStorage(undefined);
+    //todo add popup
+    console.log('[Log] Logging out and Redirecting to ', pathname);
+    history.push(pathname);
+}
+function redirectOnly(pathname , token) {
+    saveTokenToLocalStorage(token);
     //todo add popup
     console.log('[Log] Redirecting to ', pathname);
     history.push(pathname);

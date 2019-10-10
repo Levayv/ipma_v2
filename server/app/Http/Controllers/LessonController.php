@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Lesson;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
@@ -99,6 +100,9 @@ class LessonController extends Controller
 
         $lesson = new Lesson();
         $lesson->fill($request->all());
+
+        $lesson->user_id = auth()->user()->getAuthIdentifier();
+
         $lesson->save();
 
         $response = response()->json(
@@ -141,6 +145,7 @@ class LessonController extends Controller
      * @param Request $request
      * @param int $id
      * @return Response
+     * @throws AuthorizationException
      */
     public function update(Request $request, int $id)
     {
@@ -152,6 +157,18 @@ class LessonController extends Controller
         }
 
         $lesson = Lesson::query()->find($id);
+
+        try {
+            $this->authorize('update', $lesson);
+        } catch (AuthorizationException $e) {
+            //todo optimise , upgrade getJsonFail
+            return response()->json([
+                'status' => 'fail',
+                'title' => 'forbidden',
+                'error' => 'you are not a owner of this lesson',
+            ],403);
+        }
+
         $lesson->fill($request->all());
         $lesson->save();
 
@@ -170,6 +187,18 @@ class LessonController extends Controller
     public function delete(int $id)
     {
         $lesson = Lesson::query()->find($id);
+
+        try {
+            $this->authorize('delete', $lesson);
+        } catch (AuthorizationException $e) {
+            //todo optimise , upgrade getJsonFail
+            return response()->json([
+                'status' => 'fail',
+                'title' => 'forbidden',
+                'error' => 'you are not a owner of this lesson',
+            ],403);
+        }
+
         $lesson->delete();
         return response()->json(
             self::getJsonSuccess(__FUNCTION__)
