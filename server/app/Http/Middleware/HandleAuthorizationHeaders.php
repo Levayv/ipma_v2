@@ -34,25 +34,25 @@ class HandleAuthorizationHeaders extends BaseMiddleware
             return response()->json([
                 'status' => STATUS_TEXT,
                 'title' => 'Token is Expired',
-                'details' => '... You have been idle for too long ...',
+                'message' => '... You have been idle for too long ...',
             ], STATUS_CODE);
         } catch (TokenBlacklistedException $e) {
             return response()->json([
                 'status' => STATUS_TEXT,
                 'title' => 'Token is blacklisted',
-                'details' => '... Token was refreshed , this is old one  ...',
+                'message' => '... Token was refreshed , this is old one  ...',
             ], STATUS_CODE);
         } catch (TokenInvalidException $e) {
             return response()->json([
                 'status' => STATUS_TEXT,
                 'title' => 'Token is Invalid',
-                'details' => '... Token is not provided by server ...',
+                'message' => '... Token is not provided by server , forged or misused ...',
             ], STATUS_CODE);
         } catch (Exception $e) {
             return response()->json([
                 'status' => STATUS_TEXT,
                 'title' => 'Token is missing',
-                'details' => '... Authorization Token not found in request headers ...',
+                'message' => '... Authorization Token not found in request headers ...',
             ], STATUS_CODE);
         }
 

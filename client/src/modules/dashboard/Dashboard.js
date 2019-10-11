@@ -52,7 +52,7 @@ class Dashboard extends React.Component {
 
     render() {
         const renderGreetings = () => {
-            console.log("!!!" , this.state.user);
+            // console.log("!!!" , this.state.user);
             if (this.state.user.name) {
                 return (<div>
                     <div>Welcome back {this.state.user.name}</div>

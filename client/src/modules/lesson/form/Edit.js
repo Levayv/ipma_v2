@@ -6,6 +6,7 @@ import {cloneDeep} from "lodash";
 import {readSingleLessonAttempt} from "../../../redux/action/lesson";
 import LessonForm from "./components/Form"
 import history from "../../../route/history";
+import Swal from "sweetalert2";
 
 class ConnectedLessonEditForm extends React.Component {
     constructor(props) {
@@ -44,21 +45,34 @@ class ConnectedLessonEditForm extends React.Component {
                     lesson: {},
                 },
                 lessonUpdateSuccessRedirect
-                //todo add popup , use response message
             );
 
             function lessonUpdateSuccessRedirect() {
-                history.push("/lesson/list/");
+                //todo add popup , use response message
+                Swal.fire({
+                    type: 'success',
+                    title: "Lesson updated successfully",
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    showCloseButton: true,
+                    // confirmButtonColor: Color.BLUE,
+                    // cancelButtonColor: Color.RED,
+                    confirmButtonText: "Back to List",
+                    cancelButtonText: "Back to Dashboard",
+                }).then(result => {
+                        if (result.value) {
+                            history.push("/lesson/list/");
+                        } else if (
+                            result.dismiss === Swal.DismissReason.cancel
+                        ) {
+                            history.push("/dashboard/")
+                        }
+                    }
+                );
             }
         };
         this.lessonUpdateFailure = (error) => {
-            this.setState({
-                    loading: false,
-                    lesson: {},
-                    error: error.toString()
-                },
-                //todo add popup
-            )
+            // do nothing , error handling is centralised at initAxios
         };
     }
 

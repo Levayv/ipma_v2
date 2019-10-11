@@ -1,4 +1,6 @@
 import axios from 'axios';
+import Swal from 'sweetalert2'
+
 import {saveTokenToLocalStorage} from './mapStoreToLocal';
 import {loadTokenFromLocalStorage} from './mapStoreToLocal';
 import history from '../route/history';
@@ -45,48 +47,95 @@ function initAxiosInterceptors() {
             console.log('[Log] Axios Response errors are ', error);
 
             if (error.response === undefined) {
-                //todo add popup
-                console.log("Network error occurred");
-                console.log(" * check network connection , wifi / ethernet ");
-                console.log(" * check server availability inside same network");
+                Swal.fire({
+                    type: 'error',
+                    title: "Error - Network error occurred",
+                    text: "* check network connection , wifi / ethernet "
+                        + "* check server availability inside same network",
+                    confirmButtonText: "Back to Home Page",
+                }).then(result => {
+                        if (result.value) {
+                            history.push("/home/");
+                        }
+                    }
+                );
                 redirectWithPurge('/home')
             } else {
                 if (error.response.status !== undefined) {
                     switch (error.response.status) {
                         case 401:
-                            //todo add popup
-                            console.log("Error 401 Un-Auth");
+                            Swal.fire({
+                                type: 'error',
+                                title: "Error 401 - Un-Authorized",
+                                text: error.response.data.message,
+                                // text: "You must be logged in to complete this action",
+                                confirmButtonText: "Back to Log-in",
+                            }).then(result => {
+                                    if (result.value) {
+                                        history.push("/auth/login/");
+                                    }
+                                }
+                            );
                             redirectWithPurge('/auth/login');
                             break;
                         case 403:
-                            //todo add popup
-                            console.log("Error 403 Forbidden");
-                            console.log(error.response.data.message);
-                            console.log(error.response.data.error);
+                            Swal.fire({
+                                type: 'error',
+                                title: "Error 403 - Forbidden",
+                                text: error.response.data.message,
+                                showConfirmButton: true,
+                                showCancelButton: true,
+                                // confirmButtonColor: Color.BLUE,
+                                // cancelButtonColor: Color.GREY,
+                                confirmButtonText: "Back to Log-in",
+                                cancelButtonText: "Back to Dashboard",
+                            }).then(result => {
+                                    if (result.value) {
+                                        history.push("/auth/login/");
+                                    } else if (
+                                        result.dismiss === Swal.DismissReason.cancel
+                                    ) {
+                                        history.push("/dashboard/")
+                                    }
+                                }
+                            );
                             redirectOnly('/dashboard', error.response.headers.authorization);
                             break;
                         case 500:
-                            //todo add popup
-                            console.log("Internal server error occurred");
-                            console.log(" * Please contact system administrator ");
-                            console.log(" * Don't call him at 04:00 AM and tell him about this error");
-                            console.log(" * Technical Details : " + error.response.data.message);
+                            Swal.fire({
+                                type: 'error',
+                                title: "Error 500 - Internal Server Error",
+                                // todo format using html/jsx
+                                text: "* Please contact system administrator "
+                                    + "* Don't call him at 04:00 AM and tell him about this error"
+                                    + "* Technical Details : "
+                                    + error.response.data.message,
+                                showConfirmButton: true,
+                                // confirmButtonColor: Color.BLUE,
+                                cancelButtonText: "Back to Home Page",
+                            }).then(result => {
+                                    if (result.value) {
+                                        history.push("/home/");
+                                    }
+                                }
+                            );
                             redirectWithPurge("/home");
                             break;
                         default:
                             break;
                     }
-                }else{
+                } else {
                     // todo Research use cases
                     console.log("Error XXX - Response with no status");
                     redirectWithPurge("/home");
                 }
             }
-            return error;
+            return Promise.reject(error);
         }
     );
 
 }
+
 
 /**
  * Redirect and invalidate Token
@@ -95,12 +144,20 @@ function initAxiosInterceptors() {
 function redirectWithPurge(pathname) {
     saveTokenToLocalStorage(undefined);
     //todo add popup
-    console.log('[Log] Logging out and Redirecting to ', pathname);
-    history.push(pathname);
+    // Toast.fire({
+    //     type: 'info',
+    //     title: "Logging out and Redirecting to " +pathname,
+    // }).then(result => {
+    //     history.push(pathname);
+    // });
 }
-function redirectOnly(pathname , token) {
+
+function redirectOnly(pathname, token) {
     saveTokenToLocalStorage(token);
-    //todo add popup
-    console.log('[Log] Redirecting to ', pathname);
-    history.push(pathname);
+    // Toast.fire({
+    //     type: 'info',
+    //     title: "Redirecting to " +pathname,
+    // }).then(result => {
+    //     history.push(pathname);
+    // });
 }

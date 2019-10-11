@@ -15,7 +15,8 @@
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "sweetalert2": "^8.17.4",
-    "sweetalert2-react-content": "^1.1.0"
+    "sweetalert2-react-content": "^1.1.0",
+    "react-bootstrap-sweetalert": "^4.4.1"
   },
   "devDependencies": {},
   "scripts": {

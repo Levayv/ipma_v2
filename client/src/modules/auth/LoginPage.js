@@ -2,11 +2,12 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {cloneDeep} from 'lodash';
 import Form from 'react-bootstrap/Form';
+import Swal from 'sweetalert2'
 
 import {
     loginAttempt,
 } from '../../redux/action/auth';
-
+import Toast from '../../api/Toast'
 import LabeledInput from '../common/LabeledInput';
 import Button from '../common/Button';
 import Validator from '../common/Validator'
@@ -24,7 +25,7 @@ class ConnectedLoginPage extends React.Component {
                     /** user input of corresponding fields */
                     credentials: {
                         //todo STOPSHIP for testing purposes , default values must be empty strings
-                        login: 'a.mshetsyan@mail.ru',
+                        login: 'A.Mshetsyan@mail.ru',
                         password: '123456789',
                         // login: '',
                         // password: '',
@@ -79,10 +80,16 @@ class ConnectedLoginPage extends React.Component {
 
         this.validator = new Validator(rules);
 
+
+
         // todo add popup remove console.log
+        // Toast.fire({
+        //     type: 'success',
+        //     title: 'Signed in successfully'
+        // })
         let out = "Login Page mounted";
-        if(this.props.location.from !== undefined){
-            out+=" , Redirected from " + this.props.location.from.pathname
+        if (this.props.location.from !== undefined) {
+            out += " , Redirected from " + this.props.location.from.pathname
         }
         console.log(out);
     }
@@ -90,17 +97,30 @@ class ConnectedLoginPage extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.session.isReady) {
             if (this.props.session.errors.length === 0) {
-                // success
-                // todo add popup remove console.log
-                console.log("Login success , redirecting to dashboard");
-                history.push("/dashboard/")
+                Swal.fire({
+                    type: 'success',
+                    title: "Login successful",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(result => {
+                    history.push("/dashboard/")
+                });
             } else {
-                // failed
-                // todo add popup remove console.log
-                console.log("Login failed , showing errors")
+                Swal.fire({
+                    type: 'error',
+                    title: "Login failed",
+                    //todo refactor error structure //
+                    text: ("" + this.props.session.errors[0]+" - "+ this.props.session.errors[1]),
+                    showConfirmButton: false,
+                    showCancelButton: true,
+                    cancelButtonText: 'Try again',
+                }).then(() => {
+                    const currentState = cloneDeep(this.state);
+                    currentState.form.validation.errors.login.push("Login and/or password are not correct");
+                    currentState.form.validation.errors.password.push("Login and/or password are not correct");
+                    this.setState(currentState);
+                });
             }
-        } else {
-            // fetch in progress or not even started
         }
     }
 
