@@ -31,7 +31,7 @@ class LabeledInput extends React.Component {
         };
         const renderSuccess = () => {
             // todo remove if unnecessary
-            return "OK ✓";
+            return "";
         };
         return (
             <Form.Group>

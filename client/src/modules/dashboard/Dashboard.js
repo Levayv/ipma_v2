@@ -25,6 +25,8 @@ class Dashboard extends React.Component {
             let newState = cloneDeep(this.state);
             newState.loading = false;
             newState.user.name = response.data.name;
+            newState.user.email = response.data.email;
+            newState.user.role = response.data.role_id;
             this.setState(newState,
                 lessonCreateSuccessAction
             );
@@ -50,8 +52,13 @@ class Dashboard extends React.Component {
 
     render() {
         const renderGreetings = () => {
+            console.log("!!!" , this.state.user);
             if (this.state.user.name) {
-                return ("Welcome back " + this.state.user.name);
+                return (<div>
+                    <div>Welcome back {this.state.user.name}</div>
+                    <div>Email is {this.state.user.email}</div>
+                    <div>Role is {this.state.user.role}</div>
+                </div>);
             } else
                 return ("");
         };
