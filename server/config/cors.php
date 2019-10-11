@@ -13,7 +13,7 @@ return [
     */
 
     'supportsCredentials' => false,
-    'allowedOrigins' => ["http://localhost:3000", "http://localhost:3001"],
+    'allowedOrigins' => [env("CLIENT_ALLOW_IP")],
     'allowedOriginsPatterns' => [],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],

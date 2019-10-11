@@ -2,10 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
-
 class AuthController extends Controller
 {
     /**
@@ -15,7 +11,8 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'me']]);
+        $this->middleware('authHandle', ['except' => ['login']]);
     }
 
     /**
@@ -28,7 +25,14 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Invalid Credentials'], 401);
+            return response()->json([
+                'errors' => [
+                    'Invalid Credentials',
+                    'Wrong Email and/or Password',
+                ],
+                'isLoginSuccessful' => false,
+            ],
+                200);
         }
 
         return $this->respondWithToken($token);
@@ -41,7 +45,18 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        $userInfo = auth()->user();
+
+        if (!isset($userInfo)) {
+            // todo research use case,
+            //  HandleAuthorizationHeaders middleware will exclude the case of missing user
+            $userInfo = [
+                'status' => 'fail',
+                'title' => '... No user defined with this token , practically impossible ...',
+            ];
+        }
+        // todo strip $userInfo from unused data
+        return response()->json($userInfo);
     }
 
     /**
@@ -75,12 +90,17 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ],
-            200,
-            ["Authorization" => "$token"]);
+        $response = response();
+        return $response
+            ->json(
+                [
+                    'isLoginSuccessful' => true,
+                    'access_token' => "look in the header dude",
+                    'token_type' => 'bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60
+                ], 200)
+            ->header(
+                'Authorization', $token
+            );
     }
 }
