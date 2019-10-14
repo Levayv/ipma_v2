@@ -51,6 +51,7 @@ const authReducer = function (state = initialState, action) {
     if (action.type === LOGIN_ERROR) {
         const newState = cloneDeep(state);
         newState.session.isReady = true;
+        newState.session.errors = [action.payload.error , ]; // .response.data.message
         return newState;
     }
     if (action.type === LOGIN_REFRESH) {

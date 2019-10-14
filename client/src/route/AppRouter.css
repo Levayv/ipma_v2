@@ -54,13 +54,13 @@ a {
     box-shadow: 0 8px 6px -6px var(--pallete-black);
 }
 
-
 .aside-body a {
     display: block;
 }
 
 .router-nav-menu {
     background-color: inherit;
+    width: 100%;
     /*text-align: center;*/
     /*margin: auto;*/
 }
@@ -71,7 +71,7 @@ a {
     border-radius: 10px;
 }
 
-.nav-link:hover {
+.nav-link:hover , .dropdown-item:hover{
     background-color: var(--pallete-dark);
 }
 
@@ -83,9 +83,9 @@ a {
     background-color: var(--pallete-light);
 }
 
-.dropdown-item:hover {
-    background-color: var(--pallete-white);
-}
+/*.dropdown-item:hover {*/
+/*    background-color: var(--pallete-white);*/
+/*}*/
 
 /*********************************************************************************************/
 .btn-primary {;
@@ -166,4 +166,9 @@ a {
 .refresh-button {
     position: relative;
     top: 32px;
+}
+
+.btn-sm {
+    margin-left: 2px;
+    margin-right: 2px;
 }

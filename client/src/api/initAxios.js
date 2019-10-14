@@ -72,7 +72,7 @@ function initAxiosInterceptors() {
                                 confirmButtonText: "Back to Log-in",
                             }).then(result => {
                                     if (result.value) {
-                                        history.push("/auth/login/");
+                                        redirectWithPurge("/auth/login/");
                                     }
                                 }
                             );
@@ -91,11 +91,11 @@ function initAxiosInterceptors() {
                                 cancelButtonText: "Back to Dashboard",
                             }).then(result => {
                                     if (result.value) {
-                                        history.push("/auth/login/");
+                                        redirectWithPurge("/auth/login/");
                                     } else if (
                                         result.dismiss === Swal.DismissReason.cancel
                                     ) {
-                                        history.push("/dashboard/")
+                                        redirectWithPurge("/dashboard/")
                                     }
                                 }
                             );
@@ -115,11 +115,10 @@ function initAxiosInterceptors() {
                                 cancelButtonText: "Back to Home Page",
                             }).then(result => {
                                     if (result.value) {
-                                        history.push("/home/");
+                                        redirectWithPurge("/home/");
                                     }
                                 }
                             );
-                            redirectWithPurge("/home");
                             break;
                         default:
                             break;
@@ -141,23 +140,12 @@ function initAxiosInterceptors() {
  * Redirect and invalidate Token
  * @param pathname {string} Redirection path
  * */
-function redirectWithPurge(pathname) {
+function redirectWithPurge(pathname , alertText) {
     saveTokenToLocalStorage(undefined);
-    //todo add popup
-    // Toast.fire({
-    //     type: 'info',
-    //     title: "Logging out and Redirecting to " +pathname,
-    // }).then(result => {
-    //     history.push(pathname);
-    // });
+    history.push(pathname , {alertText:alertText});
 }
 
 function redirectOnly(pathname, token) {
     saveTokenToLocalStorage(token);
-    // Toast.fire({
-    //     type: 'info',
-    //     title: "Redirecting to " +pathname,
-    // }).then(result => {
-    //     history.push(pathname);
-    // });
+    history.push(pathname);
 }

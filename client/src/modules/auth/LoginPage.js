@@ -7,11 +7,12 @@ import Swal from 'sweetalert2'
 import {
     loginAttempt,
 } from '../../redux/action/auth';
-import Toast from '../../api/Toast'
+// import {toast} from '../../api/alerts';
+// import {alert} from '../../api/alerts';
 import LabeledInput from '../common/LabeledInput';
 import Button from '../common/Button';
-import Validator from '../common/Validator'
-import {createRulesFor} from '../common/Validator'
+import Validator from '../common/Validator';
+import {createRulesFor} from '../common/Validator';
 import history from "../../route/history";
 
 
@@ -52,23 +53,36 @@ class ConnectedLoginPage extends React.Component {
         this.updateTextInput = (event) => {
             const key = event.target.name;
             const value = event.target.value;
-            const currentState = cloneDeep(this.state);
+            const newState = cloneDeep(this.state);
 
-            currentState.form.data.credentials[key] = value;
-            currentState.form.validation = this.validator.process({[key]: value}, currentState.form.validation);
-            currentState.form.validation.isSubmitEnabled = this.updateButton(currentState.form.validation);
-            currentState.form.touched[key] = true;
+            newState.form.data.credentials[key] = value;
+            newState.form.validation = this.validator.process({[key]: value}, newState.form.validation);
+            newState.form.touched[key] = true;
+            newState.form.validation.isSubmitEnabled = this.updateButton(newState.form);
 
-            this.setState(currentState);
+            this.setState(newState);
         };
 
         /** todo refactor updateButton , move to Validator object ? */
-        this.updateButton = (validationData) => {
-            return validationData.login && validationData.password;
+        this.updateButton = (form) => {
+            // validation must be processed with positive results and all form elements must be touched at least once
+            return (
+                form.validation.login &&
+                form.validation.password &&
+                form.touched.login &&
+                form.touched.password
+            );
         };
         /** user click on LOGIN button */
         this.handleLogin = () => {
-            this.props.loginAttempt(this.state.form.data.credentials);    // axios.post(
+            const loginAfterStateUpdate = () => {
+                this.props.loginAttempt(this.state.form.data.credentials)
+            }
+            const newState = cloneDeep(this.state);
+            newState.form.validation.isSubmitEnabled = false;
+            this.setState(newState ,
+                loginAfterStateUpdate
+            );
         };
     }
 
@@ -81,44 +95,74 @@ class ConnectedLoginPage extends React.Component {
         this.validator = new Validator(rules);
 
 
-
         // todo add popup remove console.log
-        // Toast.fire({
-        //     type: 'success',
-        //     title: 'Signed in successfully'
-        // })
-        let out = "Login Page mounted";
+
+        // let out = "Login Page mounted";
         if (this.props.location.from !== undefined) {
-            out += " , Redirected from " + this.props.location.from.pathname
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                type: 'warning',
+                title: 'You must be Logged-in to continue'
+            }).then(r => {
+            });
+        } else {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                type: 'info',
+                title: 'Welcome'
+            }).then(r => {
+            });
+            // out += " , Redirected from " + this.props.location.from.pathname
         }
-        console.log(out);
+        // console.log(out);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("login page componentDidUpdate");
+        console.log(this.state);
         if (this.props.session.isReady) {
             if (this.props.session.errors.length === 0) {
                 Swal.fire({
                     type: 'success',
                     title: "Login successful",
+                    text: "Redirecting to Dashboard",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(result => {
                     history.push("/dashboard/")
                 });
             } else {
+                /** @type string[] Error Bag */
+                const errorsArray = this.props.session.errors;
+                const errorsLength = this.props.session.errors.length;
+                let formattedErrors = errorsArray[0];
+                for (let i = 1; i <= errorsLength; i++) {
+                    if (errorsArray[i] !== undefined) {
+                        formattedErrors.concat(", ", errorsArray[i]);
+                    }
+                }
                 Swal.fire({
                     type: 'error',
                     title: "Login failed",
                     //todo refactor error structure //
-                    text: ("" + this.props.session.errors[0]+" - "+ this.props.session.errors[1]),
+                    text: (formattedErrors),
                     showConfirmButton: false,
                     showCancelButton: true,
                     cancelButtonText: 'Try again',
                 }).then(() => {
-                    const currentState = cloneDeep(this.state);
-                    currentState.form.validation.errors.login.push("Login and/or password are not correct");
-                    currentState.form.validation.errors.password.push("Login and/or password are not correct");
-                    this.setState(currentState);
+                    const newState = cloneDeep(this.state);
+                    newState.form.validation.errors.login.push("Login and/or password are not correct");
+                    newState.form.validation.errors.password.push("Login and/or password are not correct");
+                    newState.form.touched.login = false;
+                    newState.form.touched.password = false;
+                    newState.form.validation.isSubmitEnabled = this.updateButton(newState.form);
+                    this.setState(newState);
                 });
             }
         }

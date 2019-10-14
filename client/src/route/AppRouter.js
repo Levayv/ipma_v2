@@ -45,59 +45,47 @@ class AppRouter extends Component {
                     <Navbar.Toggle aria-controls="main-navbar-root"/>
                     <Navbar.Collapse id="main-navbar-root">
                         <Nav className="mr-auto">
-                            <Nav.Link href=''>
-                                <NavLink
-                                    to="/home"
-                                    activeStyle={{fontWeight: "bold", color: "black"}}
-                                >
-                                    HomePage
-                                </NavLink>
+                            <Nav.Link
+                                as={NavLink}
+                                to="/home"
+                                activeStyle={{fontWeight: "bold", color: "black"}}
+                            >
+                                HomePage
                             </Nav.Link>
-                            <Nav.Link href=''>
-                                <NavLink
-                                    to="/auth/login"
-                                    activeStyle={{fontWeight: "bold", color: "black"}}
-                                >
-                                    Login
-                                </NavLink>
+                            <Nav.Link
+                                as={NavLink}
+                                to="/auth/login"
+                                activeStyle={{fontWeight: "bold", color: "black"}}
+                            >
+                                Login
                             </Nav.Link>
-                            <Nav.Link href=''>
-                                <NavLink
-                                    to="/dashboard"
-                                    activeStyle={{fontWeight: "bold", color: "black"}}
-                                >
-                                    Dashboard
-                                </NavLink>
+                            <Nav.Link
+                                as={NavLink}
+                                to="/dashboard"
+                                activeStyle={{fontWeight: "bold", color: "black"}}
+                            >
+                                Dashboard
                             </Nav.Link>
-
                             <NavDropdown title="Lesson" id="lesson-nav-dropdown">
-                                <NavDropdown.Item href="">
-                                    <Nav.Link href=''>
-                                        <NavLink
-                                            to="/lesson/list"
-                                            activeStyle={{fontWeight: "bold", color: "black"}}
-                                        >
-                                            List
-                                        </NavLink>
-                                    </Nav.Link>
+                                <NavDropdown.Item
+                                    as={NavLink}
+                                    to="/lesson/list"
+                                    activeStyle={{fontWeight: "bold", color: "black"}}
+                                >
+                                    List
                                 </NavDropdown.Item>
-                                <NavDropdown.Item href="">
-                                    <Nav.Link href=''>
-                                        <NavLink
-                                            to="/lesson/form"
-                                            activeStyle={{fontWeight: "bold", color: "black"}}
-                                        >
-                                            Form
-                                        </NavLink>
-                                    </Nav.Link>
+                                <NavDropdown.Item
+                                    as={NavLink}
+                                    to="/lesson/form"
+                                    activeStyle={{fontWeight: "bold", color: "black"}}
+                                >
+                                    Form
                                 </NavDropdown.Item>
                                 <NavDropdown.Divider/>
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
-
-
             )
         };
         const renderRoutes = () => {
@@ -172,9 +160,9 @@ class AppRouter extends Component {
 function PageNotFound({location}) {
     return (
         <span>
-            <h1> Error 404 </h1>
-            <h2> Page "<code>{location.pathname.substr(1)}</code>" not found </h2>
-        </span>
+                        <h1> Error 404 </h1>
+                        <h2> Page "<code>{location.pathname.substr(1)}</code>" not found </h2>
+                        </span>
     )
 }
 
